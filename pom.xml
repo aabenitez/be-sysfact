@@ -8,12 +8,12 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.marithe</groupId>
+	<groupId>com.sysfact</groupId>
 	<artifactId>sysfact</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>sysfact</name>
-	<description>Sistema de Facturación - Marithe Plantas y Ceramicas en Spring Boot</description>
+	<description>Sistema de Facturación Restful API en Spring Boot y JDBC template</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
