@@ -1,8 +1,8 @@
-package py.com.ventasjdbc.service;
+package com.marithe.sysfact.service;
+
+import com.marithe.sysfact.model.Rol;
 
 import java.util.List;
-
-import py.com.ventasjdbc.model.Rol;
 
 public interface RolService {
 	

@@ -1,6 +1,6 @@
-package py.com.ventasjdbc.resources;
+package com.marithe.sysfact.resources;
 
-import py.com.ventasjdbc.model.BaseEntity;
+import com.marithe.sysfact.model.BaseEntity;
 
 import java.util.List;
 

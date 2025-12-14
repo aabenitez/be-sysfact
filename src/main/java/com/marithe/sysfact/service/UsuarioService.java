@@ -1,8 +1,8 @@
-package py.com.ventasjdbc.service;
+package com.marithe.sysfact.service;
+
+import com.marithe.sysfact.model.Usuario;
 
 import java.util.List;
-
-import py.com.ventasjdbc.model.Usuario;
 
 public interface UsuarioService {
 

@@ -1,11 +1,10 @@
-package py.com.ventasjdbc.dao.mapper;
+package com.marithe.sysfact.dao.mapper;
+
+import org.springframework.jdbc.core.RowMapper;
+import com.marithe.sysfact.model.Cliente;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.springframework.jdbc.core.RowMapper;
-
-import py.com.ventasjdbc.model.Cliente;
 
 public class ClienteMapper implements RowMapper<Cliente> {
 

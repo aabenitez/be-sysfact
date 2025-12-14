@@ -1,12 +1,12 @@
-package py.com.ventasjdbc.security;
+package com.marithe.sysfact.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import py.com.ventasjdbc.model.Rol;
-import py.com.ventasjdbc.model.Usuario;
-import py.com.ventasjdbc.util.SecurityConstants;
+import com.marithe.sysfact.model.Rol;
+import com.marithe.sysfact.model.Usuario;
+import com.marithe.sysfact.util.SecurityConstants;
 
 import java.util.Date;
 

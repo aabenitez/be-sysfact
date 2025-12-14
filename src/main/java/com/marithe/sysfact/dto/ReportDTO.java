@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.dto;
+package com.marithe.sysfact.dto;
 
 import org.springframework.core.io.Resource;
 

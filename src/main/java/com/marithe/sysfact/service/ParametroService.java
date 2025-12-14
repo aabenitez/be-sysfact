@@ -1,6 +1,6 @@
-package py.com.ventasjdbc.service;
+package com.marithe.sysfact.service;
 
-import py.com.ventasjdbc.model.Parametro;
+import com.marithe.sysfact.model.Parametro;
 
 import java.util.List;
 

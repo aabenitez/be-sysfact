@@ -1,8 +1,8 @@
-package py.com.ventasjdbc.dao.impl;
+package com.marithe.sysfact.dao.impl;
 
-import py.com.ventasjdbc.model.BaseEntity;
-import py.com.ventasjdbc.resources.GenericDao;
-import py.com.ventasjdbc.resources.GenericService;
+import com.marithe.sysfact.model.BaseEntity;
+import com.marithe.sysfact.resources.GenericDao;
+import com.marithe.sysfact.resources.GenericService;
 
 import java.util.List;
 

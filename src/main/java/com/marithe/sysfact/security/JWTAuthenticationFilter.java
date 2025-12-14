@@ -1,16 +1,8 @@
-package py.com.ventasjdbc.security;
+package com.marithe.sysfact.security;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -23,17 +15,22 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.marithe.sysfact.dto.ApiUserDTO;
+import com.marithe.sysfact.dto.UsuarioDTO;
+import com.marithe.sysfact.exception.ErrorResponse;
+import com.marithe.sysfact.model.Usuario;
+import com.marithe.sysfact.service.UsuarioService;
+import com.marithe.sysfact.util.SecurityConstants;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import py.com.ventasjdbc.dto.ApiUserDTO;
-import py.com.ventasjdbc.dto.UsuarioDTO;
-import py.com.ventasjdbc.exception.ErrorResponse;
-import py.com.ventasjdbc.model.Usuario;
-import py.com.ventasjdbc.service.UsuarioService;
-import py.com.ventasjdbc.util.SecurityConstants;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

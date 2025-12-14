@@ -1,11 +1,4 @@
-package py.com.ventasjdbc.dao.impl;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package com.marithe.sysfact.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,11 +6,17 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import com.marithe.sysfact.dao.UsuarioDao;
+import com.marithe.sysfact.dao.mapper.UsuarioMapper;
+import com.marithe.sysfact.dao.sql.UsuarioDaoSql;
+import com.marithe.sysfact.model.Usuario;
 
-import py.com.ventasjdbc.dao.UsuarioDao;
-import py.com.ventasjdbc.dao.mapper.UsuarioMapper;
-import py.com.ventasjdbc.dao.sql.UsuarioDaoSql;
-import py.com.ventasjdbc.model.Usuario;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Repository
 public class UsuarioDaoImpl implements UsuarioDao {

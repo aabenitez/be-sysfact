@@ -1,12 +1,11 @@
-package py.com.ventasjdbc.dao.mapper;
+package com.marithe.sysfact.dao.mapper;
+
+import org.springframework.jdbc.core.RowMapper;
+import com.marithe.sysfact.model.Rol;
+import com.marithe.sysfact.model.Usuario;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.springframework.jdbc.core.RowMapper;
-
-import py.com.ventasjdbc.model.Rol;
-import py.com.ventasjdbc.model.Usuario;
 
 public class UsuarioMapper implements RowMapper<Usuario> {
 

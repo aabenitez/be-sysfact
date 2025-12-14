@@ -1,16 +1,7 @@
-package py.com.ventasjdbc.security;
+package com.marithe.sysfact.security;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jdt.internal.compiler.flow.TryFlowContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,12 +9,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import com.marithe.sysfact.model.Usuario;
+import com.marithe.sysfact.service.UsuarioService;
+import com.marithe.sysfact.util.SecurityConstants;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import py.com.ventasjdbc.model.Usuario;
-import py.com.ventasjdbc.service.UsuarioService;
-import py.com.ventasjdbc.util.SecurityConstants;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

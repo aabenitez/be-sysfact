@@ -1,9 +1,9 @@
-package py.com.ventasjdbc.resources;
+package com.marithe.sysfact.resources;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import py.com.ventasjdbc.model.BaseEntity;
+import com.marithe.sysfact.model.BaseEntity;
 
 import javax.validation.Valid;
 import java.util.List;

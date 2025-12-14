@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.constants;
+package com.marithe.sysfact.constants;
 
 public class ReportFormat {
     public static String PDF = "pdf";

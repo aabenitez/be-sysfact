@@ -1,13 +1,6 @@
-package py.com.ventasjdbc.security;
+package com.marithe.sysfact.security;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -26,12 +19,16 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import com.marithe.sysfact.exception.ErrorResponse;
+import com.marithe.sysfact.service.UsuarioService;
+import com.marithe.sysfact.util.SecurityConstants;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import py.com.ventasjdbc.exception.ErrorResponse;
-import py.com.ventasjdbc.service.UsuarioService;
-import py.com.ventasjdbc.util.SecurityConstants;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -72,40 +69,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/recuperar-clave/**").permitAll()
 				// Our private endpoints
 
-				.antMatchers(HttpMethod.GET, "/paises/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/paises/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/paises/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/paises/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.GET, "/unidades-de-medida/**").hasAnyAuthority("Cargador", "Administrador")
+				.antMatchers(HttpMethod.POST, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.PUT, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.DELETE, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
 
-				.antMatchers(HttpMethod.GET, "/ciudades/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/ciudades/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/ciudades/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/ciudades/**").hasAnyAuthority("Administrador")
-
-				.antMatchers(HttpMethod.GET, "/sucursales/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/sucursales/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/sucursales/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/sucursales/**").hasAnyAuthority("Administrador")
-
-				.antMatchers(HttpMethod.GET, "/depositos/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/depositos/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/depositos/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/depositos/**").hasAnyAuthority("Administrador")
-
-				.antMatchers(HttpMethod.GET, "/sectores/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/sectores/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/sectores/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/sectores/**").hasAnyAuthority("Administrador")
-
-				.antMatchers(HttpMethod.GET, "/unidades/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/unidades/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/unidades/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/unidades/**").hasAnyAuthority("Administrador")
-
-				.antMatchers(HttpMethod.GET, "/productos/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/productos/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/productos/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.DELETE, "/productos/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.GET, "/articulos/**").hasAnyAuthority("Cargador", "Administrador")
+				.antMatchers(HttpMethod.POST, "/articulos/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.PUT, "/articulos/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.DELETE, "/articulos/**").hasAnyAuthority("Administrador")
 
 				.antMatchers("/roles/**").hasAnyAuthority("Administrador")
 

@@ -1,11 +1,11 @@
-package py.com.ventasjdbc.service.impl;
+package com.marithe.sysfact.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import py.com.ventasjdbc.dao.ParametroDao;
-import py.com.ventasjdbc.model.Parametro;
-import py.com.ventasjdbc.service.ParametroService;
+import com.marithe.sysfact.dao.ParametroDao;
+import com.marithe.sysfact.model.Parametro;
+import com.marithe.sysfact.service.ParametroService;
 
 import java.util.List;
 

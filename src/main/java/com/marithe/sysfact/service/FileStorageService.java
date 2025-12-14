@@ -1,5 +1,17 @@
-package py.com.ventasjdbc.service;
+package com.marithe.sysfact.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import com.marithe.sysfact.constants.ApplicationConstants;
+import com.marithe.sysfact.exception.FileNotFoundException;
+import com.marithe.sysfact.exception.FileStorageException;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -8,21 +20,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import py.com.ventasjdbc.config.FileStorageConfig;
-import py.com.ventasjdbc.constants.ApplicationConstants;
-import py.com.ventasjdbc.exception.FileNotFoundException;
-import py.com.ventasjdbc.exception.FileStorageException;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class FileStorageService {

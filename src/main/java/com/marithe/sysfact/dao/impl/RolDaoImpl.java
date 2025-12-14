@@ -1,17 +1,16 @@
-package py.com.ventasjdbc.dao.impl;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+package com.marithe.sysfact.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import com.marithe.sysfact.dao.RolDao;
+import com.marithe.sysfact.dao.sql.RolSql;
+import com.marithe.sysfact.model.Rol;
 
-import py.com.ventasjdbc.dao.RolDao;
-import py.com.ventasjdbc.dao.sql.RolSql;
-import py.com.ventasjdbc.model.Rol;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 @Repository
 public class RolDaoImpl implements RolDao {

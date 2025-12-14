@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-</beans>
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <module name="javax.servlet.jsp.api" export="true"/>
+            <module name="javax.servlet.jstl.api" export="true"/>
+            <module name="javax.servlet.api" export="true"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

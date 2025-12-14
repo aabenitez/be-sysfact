@@ -1,10 +1,10 @@
-package py.com.ventasjdbc.validators;
+package com.marithe.sysfact.validators;
+
+import com.marithe.sysfact.constraints.NestedIdConstraint;
+import com.marithe.sysfact.model.BaseEntity;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import py.com.ventasjdbc.constraints.NestedIdConstraint;
-import py.com.ventasjdbc.model.BaseEntity;
 
 public class NestedIdValidator implements ConstraintValidator<NestedIdConstraint, BaseEntity> {
 

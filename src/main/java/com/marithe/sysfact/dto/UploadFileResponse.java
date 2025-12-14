@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.dto;
+package com.marithe.sysfact.dto;
 
 public class UploadFileResponse {
 	private String fileName;

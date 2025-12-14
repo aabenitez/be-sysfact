@@ -1,7 +1,7 @@
-package py.com.ventasjdbc.dao.mapper;
+package com.marithe.sysfact.dao.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import py.com.ventasjdbc.model.Parametro;
+import com.marithe.sysfact.model.Parametro;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

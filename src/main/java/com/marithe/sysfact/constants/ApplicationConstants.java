@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.constants;
+package com.marithe.sysfact.constants;
 
 public class ApplicationConstants {
     public static final String EMAIL_USER = "email.user";

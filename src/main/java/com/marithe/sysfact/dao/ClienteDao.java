@@ -1,7 +1,7 @@
-package py.com.ventasjdbc.dao;
+package com.marithe.sysfact.dao;
 
-import py.com.ventasjdbc.model.Cliente;
-import py.com.ventasjdbc.resources.GenericDao;
+import com.marithe.sysfact.model.Cliente;
+import com.marithe.sysfact.resources.GenericDao;
 
 public interface ClienteDao extends GenericDao<Cliente> {
 

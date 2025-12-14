@@ -1,7 +1,7 @@
-package py.com.ventasjdbc.dto;
+package com.marithe.sysfact.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import py.com.ventasjdbc.util.ReportUtils;
+import com.marithe.sysfact.util.ReportUtils;
 
 import java.io.Serializable;
 import java.util.List;

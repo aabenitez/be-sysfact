@@ -1,13 +1,12 @@
-package py.com.ventasjdbc.service.impl;
-
-import java.util.List;
+package com.marithe.sysfact.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.marithe.sysfact.dao.RolDao;
+import com.marithe.sysfact.model.Rol;
+import com.marithe.sysfact.service.RolService;
 
-import py.com.ventasjdbc.dao.RolDao;
-import py.com.ventasjdbc.model.Rol;
-import py.com.ventasjdbc.service.RolService;
+import java.util.List;
 
 
 @Service

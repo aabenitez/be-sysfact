@@ -1,9 +1,9 @@
-package py.com.ventasjdbc.service;
+package com.marithe.sysfact.service;
 
 import org.springframework.stereotype.Service;
-import py.com.ventasjdbc.dao.ClienteDao;
-import py.com.ventasjdbc.dao.impl.GenericServiceImpl;
-import py.com.ventasjdbc.model.Cliente;
+import com.marithe.sysfact.dao.ClienteDao;
+import com.marithe.sysfact.dao.impl.GenericServiceImpl;
+import com.marithe.sysfact.model.Cliente;
 
 @Service
 public class ClienteService extends GenericServiceImpl<Cliente> {

@@ -1,7 +1,7 @@
-package py.com.ventasjdbc.util;
+package com.marithe.sysfact.util;
 
-import py.com.ventasjdbc.dto.ReportParamDTO;
-import py.com.ventasjdbc.dto.ReportParamsDTO;
+import com.marithe.sysfact.dto.ReportParamDTO;
+import com.marithe.sysfact.dto.ReportParamsDTO;
 
 import java.util.HashMap;
 import java.util.Map;

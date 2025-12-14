@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.model;
+package com.marithe.sysfact.model;
 
 import javax.validation.constraints.NotNull;
 

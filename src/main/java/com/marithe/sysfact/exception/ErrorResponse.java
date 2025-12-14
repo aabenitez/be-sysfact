@@ -1,10 +1,10 @@
-package py.com.ventasjdbc.exception;
+package com.marithe.sysfact.exception;
+
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import org.springframework.http.HttpStatus;
 
 public class ErrorResponse {
 

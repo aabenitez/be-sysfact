@@ -1,8 +1,7 @@
-package py.com.ventasjdbc.controller;
+package com.marithe.sysfact.controller;
 
-import java.util.Date;
-import java.util.logging.Logger;
-
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
+import com.marithe.sysfact.dto.UsuarioDTO;
+import com.marithe.sysfact.model.Usuario;
+import com.marithe.sysfact.service.UsuarioService;
+import com.marithe.sysfact.util.SecurityConstants;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import py.com.ventasjdbc.dto.UsuarioDTO;
-import py.com.ventasjdbc.model.Usuario;
-import py.com.ventasjdbc.service.UsuarioService;
-import py.com.ventasjdbc.util.SecurityConstants;
+import java.util.Date;
+import java.util.logging.Logger;
 
 @RestController
 @RequestScope

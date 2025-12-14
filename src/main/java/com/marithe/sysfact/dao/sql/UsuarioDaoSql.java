@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.dao.sql;
+package com.marithe.sysfact.dao.sql;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

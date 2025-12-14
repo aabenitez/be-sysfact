@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.config;
+package com.marithe.sysfact.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

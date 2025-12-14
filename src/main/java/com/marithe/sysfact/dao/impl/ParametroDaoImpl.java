@@ -1,12 +1,12 @@
-package py.com.ventasjdbc.dao.impl;
+package com.marithe.sysfact.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import py.com.ventasjdbc.dao.ParametroDao;
-import py.com.ventasjdbc.dao.mapper.ParametroMapper;
-import py.com.ventasjdbc.dao.sql.ParametroSql;
-import py.com.ventasjdbc.model.Parametro;
+import com.marithe.sysfact.dao.ParametroDao;
+import com.marithe.sysfact.dao.mapper.ParametroMapper;
+import com.marithe.sysfact.dao.sql.ParametroSql;
+import com.marithe.sysfact.model.Parametro;
 
 import java.util.ArrayList;
 import java.util.List;

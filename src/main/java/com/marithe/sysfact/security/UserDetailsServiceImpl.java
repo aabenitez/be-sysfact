@@ -1,6 +1,4 @@
-package py.com.ventasjdbc.security;
-
-import java.util.Arrays;
+package com.marithe.sysfact.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,9 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.marithe.sysfact.model.Usuario;
+import com.marithe.sysfact.service.UsuarioService;
 
-import py.com.ventasjdbc.model.Usuario;
-import py.com.ventasjdbc.service.UsuarioService;
+import java.util.Arrays;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

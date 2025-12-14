@@ -1,8 +1,8 @@
-package py.com.ventasjdbc.dao;
+package com.marithe.sysfact.dao;
+
+import com.marithe.sysfact.model.Usuario;
 
 import java.util.List;
-
-import py.com.ventasjdbc.model.Usuario;
 
 public interface UsuarioDao {
 

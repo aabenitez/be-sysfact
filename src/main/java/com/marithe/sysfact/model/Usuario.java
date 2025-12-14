@@ -1,12 +1,11 @@
-package py.com.ventasjdbc.model;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+package com.marithe.sysfact.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.marithe.sysfact.constraints.NestedIdConstraint;
 
-import py.com.ventasjdbc.constraints.NestedIdConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 public class Usuario extends BaseEntity {
 

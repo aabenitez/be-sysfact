@@ -1,15 +1,14 @@
-package py.com.ventasjdbc.service.impl;
-
-import java.util.List;
+package com.marithe.sysfact.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.marithe.sysfact.dao.UsuarioDao;
+import com.marithe.sysfact.model.Usuario;
+import com.marithe.sysfact.service.UsuarioService;
 
-import py.com.ventasjdbc.dao.UsuarioDao;
-import py.com.ventasjdbc.model.Usuario;
-import py.com.ventasjdbc.service.UsuarioService;
+import java.util.List;
 
 @Service
 @Transactional

@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.util;
+package com.marithe.sysfact.util;
 
 public class SecurityConstants {
 	public static final String SECRET = "V3nTaz!!1";

@@ -1,7 +1,7 @@
-package py.com.ventasjdbc.dto;
+package com.marithe.sysfact.dto;
 
-import py.com.ventasjdbc.model.Rol;
-import py.com.ventasjdbc.model.Usuario;
+import com.marithe.sysfact.model.Rol;
+import com.marithe.sysfact.model.Usuario;
 
 public class UsuarioDTO {
 	private Long id;

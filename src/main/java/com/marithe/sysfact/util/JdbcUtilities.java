@@ -1,4 +1,4 @@
-package py.com.ventasjdbc.util;
+package com.marithe.sysfact.util;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
