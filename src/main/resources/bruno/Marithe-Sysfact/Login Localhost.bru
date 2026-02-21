@@ -1,0 +1,28 @@
+meta {
+  name: Login Localhost
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/sysfact/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "alcides.abel.benitez@gmail.com",
+    "password": "12345"
+  }
+}
+
+body:form-urlencoded {
+  username: alcides.abel.benitez@gmail.com
+  password: 12345
+}
+
+body:multipart-form {
+  username: alcides.abel.benitez@gmail.com
+  password: 12345
+}

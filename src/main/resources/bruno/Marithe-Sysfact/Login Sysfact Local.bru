@@ -1,0 +1,28 @@
+meta {
+  name: Login Sysfact Local
+  type: http
+  seq: 1
+}
+
+post {
+  url: 127.0.0.1:8080/sysfact-0.0.1-SNAPSHOT/auth/login
+  body: multipartForm
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "diego.ovando87@gmail.com",
+    "password": "Cambiar321."
+  }
+}
+
+body:multipart-form {
+  username: diego.ovando87@gmail.com
+  password: Cambiar321.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

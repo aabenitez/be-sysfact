@@ -1,0 +1,15 @@
+meta {
+  name: Get Usuarios
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8080/sysfact/usuarios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NzA1OTIwMjQsInN1YiI6ImFsY2lkZXMuYWJlbC5iZW5pdGV6QGdtYWlsLmNvbSIsImV4cCI6MTc3MDU5MjkyNH0.NLRNbvTfWeQB9XSY3DENeRWNfehklXZnAAw_zcC09FgyzudhH06Zh6kO6rslW-6aP5W187rcwUb71JX6Xxpdeg
+}
