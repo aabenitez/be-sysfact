@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,14 +22,13 @@ import java.util.TimeZone;
 @Configuration
 public class AppConfig {
 
-	@Autowired
-	ParametroService parametroService;
-
 	@Primary
 	@Bean(name = "dataSource")
-	@ConfigurationProperties(prefix = "spring.datasource")
 	public DataSource dataSource() {
-		return DataSourceBuilder.create().build();
+		JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
+		dataSourceLookup.setResourceRef(false);
+		// Busca el JNDI que se configuró en la consola del WildFly
+		return dataSourceLookup.getDataSource("java:/jdbc/sysfactDS");
 	}
 
 	@Bean
@@ -58,7 +58,7 @@ public class AppConfig {
 	}
 
 	@Bean
-	public JavaMailSender javaMailSender() {
+	public JavaMailSender javaMailSender(ParametroService parametroService) {
 		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
 		String emailHost = parametroService.findByCodigo(ApplicationConstants.SMTP_HOST).getValor();

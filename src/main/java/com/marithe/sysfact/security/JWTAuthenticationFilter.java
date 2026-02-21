@@ -43,6 +43,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UsuarioService userService) {
 		this.authenticationManager = authenticationManager;
 		this.userService = userService;
+
+		// Esto fuerza al filtro a interceptar la URL definida en tus constantes (/auth/login)
+		setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
 	}
 
 	@Override

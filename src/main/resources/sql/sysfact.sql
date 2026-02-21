@@ -179,15 +179,14 @@ SELECT setval('cliente_id_seq', 7);
 
 -----
 
-INSERT INTO public.rol (id, nombre, permisos) VALUES(1, 'Admin', '["*"]');
+INSERT INTO public.rol (id, nombre, permisos) VALUES(1, 'Administrador', '["/"]');
 INSERT INTO public.rol (id, nombre, permisos) VALUES(2, 'Cargador', '["/articulos", "/unidad-de-medida", "/stock"]');
 INSERT INTO public.rol (id, nombre, permisos) VALUES(3, 'Cajero', '["/ventas"]');
 SELECT setval('rol_id_seq', 3);
 
------
-
+----- Hash para "12345"
 INSERT INTO public.usuario (id, nombres, apellidos, correo, rol_id, contrasena, password_token)
-VALUES(1, 'Usuario', 'administrador', 'alcides.abel.benitez@gmail.com', 1, '$2a$10$AnzdNs5V5IGKDnu1Ie/zJ.lK1otRlMYZIRE0u8/aLoW8iL7DuW2gC','eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWVnby5vdmFuZG84N0BnbWFpbC5jb20iLCJ1c2VySWQiOiIxIiwicm9sZSI6eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciIsInBlcm1pc29zIjoiW1wiL3JvbC5odG1sXCJdIn0sImV4cCI6MTYzNjcyMDU0NX0.GNf19qSpBlyFimxnDxTIvsFoM_0hLr62MKHYf15TT83_9dP4fPAmNv_kO5mtZxPbITNiLaF_ILnovjrTOYE-3Q');
+VALUES(1,'Usuario','Administrador','alcides.abel.benitez@gmail.com',1,'$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRkgVduWkyXMWDwo.jfO7hXLTh6',NULL);
 INSERT INTO public.usuario (id, nombres, apellidos, correo, rol_id, contrasena, password_token)
 VALUES(2, 'Usuario', 'Cargador', '', 2, '$2a$10$sg3OFOWCyh.5jzVtT.ayle3veJmGFENCiQvO0GRE8ayh9WQ6vR9jy', NULL);
 INSERT INTO public.usuario (id, nombres, apellidos, correo, rol_id, contrasena, password_token)
