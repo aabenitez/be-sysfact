@@ -184,7 +184,8 @@ INSERT INTO public.rol (id, nombre, permisos) VALUES(2, 'Cargador', '["/articulo
 INSERT INTO public.rol (id, nombre, permisos) VALUES(3, 'Cajero', '["/ventas"]');
 SELECT setval('rol_id_seq', 3);
 
------ Hash para "12345"
+-----
+
 INSERT INTO public.usuario (id, nombres, apellidos, correo, rol_id, contrasena, password_token)
 VALUES(1,'Usuario','Administrador','alcides.abel.benitez@gmail.com',1,'$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRkgVduWkyXMWDwo.jfO7hXLTh6',NULL);
 INSERT INTO public.usuario (id, nombres, apellidos, correo, rol_id, contrasena, password_token)
@@ -201,7 +202,7 @@ INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(3,
 INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(4, 'Puerto de servidor de correo', 'smtp.port', true, '465');
 INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(5, 'Servidor stmp', 'smtp.host', true, 'mail.maritheplantasyceramicas.com');
 INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(6, 'Directorio de reportes', 'reports.path', true, '\home\marithe\sysfact\src\main\resources\reportes');
-INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(7, 'Directorio de subida de archivos', 'uploads.path', true, '\home\marithe\sysfact\upload');
+INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(7, 'Directorio de subida de archivos', 'uploads.path', true, '\home\marithe\sysfact\uploads');
 SELECT setval('parametros_id_seq', 7);
 
 -----
