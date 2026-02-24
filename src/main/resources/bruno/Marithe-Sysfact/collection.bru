@@ -1,0 +1,34 @@
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:pre-request {
+  const axios = require("axios");
+  
+  // Verificamos si ya tenemos un token para no hacer login en cada click
+  if (!bru.getVar("token")) {
+      try {
+          const response = await axios.post("http://localhost:8080/sysfact/login", {
+              username: "alcides.abel.benitez@gmail.com",
+              password: "12345"
+          }, {
+              headers: { "Content-Type": "application/json" }
+          });
+  
+          // Aseguramos la ruta correcta
+          const token = response.data.user.token;
+          
+          if(token) {
+              bru.setVar("token", token);
+              console.log("Token global actualizado exitosamente.");
+          }
+  
+      } catch (error) {
+          console.error("Error en Login Global:", error.message);
+      }
+  }
+}
