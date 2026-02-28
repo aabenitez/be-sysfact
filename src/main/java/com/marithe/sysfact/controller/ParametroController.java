@@ -8,6 +8,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import com.marithe.sysfact.model.Parametro;
 import com.marithe.sysfact.service.ParametroService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,37 @@ public class ParametroController {
             return ResponseEntity.ok(parametro);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error al buscar el registro del parametro por codigo: " + codigo, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping()
+    public ResponseEntity<Parametro> insert(@RequestBody @Valid Parametro obj) {
+        try {
+            Parametro nuevo = parametroService.insert(obj);
+            return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Parametro> update(@RequestBody @Valid Parametro obj, @PathVariable Long id) {
+        Parametro actual = parametroService.findById(id);
+        if (actual == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        obj.setId(id);
+        parametroService.update(obj);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            parametroService.delete(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

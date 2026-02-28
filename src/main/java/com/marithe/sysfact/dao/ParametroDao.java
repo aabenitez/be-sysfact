@@ -8,4 +8,10 @@ public interface ParametroDao {
     List<Parametro> getAll();
 
     Parametro findByCodigo(String codigo);
+
+    void insert(Parametro obj);
+    void update(Parametro obj);
+    void delete(Long id);
+
+    Parametro findById(Long id);
 }

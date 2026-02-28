@@ -24,4 +24,26 @@ public class ParametroServiceImpl implements ParametroService {
     public Parametro findByCodigo(String codigo) {
         return dao.findByCodigo(codigo);
     }
+
+    @Override
+    public Parametro insert(Parametro obj) {
+        dao.insert(obj);
+        return obj;
+    }
+
+    @Override
+    public void update(Parametro obj) {
+        dao.update(obj);
+    }
+
+    @Override
+    public void delete(Long id) {
+        dao.delete(id);
+    }
+
+    @Override
+    public Parametro findById(Long id) {
+        // Implementar en el DAO similar al findByCodigo pero usando el ID
+        return dao.findById(id);
+    }
 }

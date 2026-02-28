@@ -32,4 +32,24 @@ public class ParametroDaoImpl implements ParametroDao {
         String sql = daoSql.getFindByCodigo();
         return jdbcTemplate.queryForObject(sql, new Object[]{codigo}, new ParametroMapper());
     }
+
+    public void insert(Parametro obj) {
+        String sql = "INSERT INTO parametros (descripcion, codigo, activo, valor) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, obj.getDescripcion(), obj.getCodigo(), obj.getActivo(), obj.getValor());
+    }
+
+    public void update(Parametro obj) {
+        String sql = "UPDATE parametros SET descripcion=?, codigo=?, activo=?, valor=? WHERE id=?";
+        jdbcTemplate.update(sql, obj.getDescripcion(), obj.getCodigo(), obj.getActivo(), obj.getValor(), obj.getId());
+    }
+
+    public void delete(Long id) {
+        String sql = "DELETE FROM parametros WHERE id=?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public Parametro findById(Long id) {
+        return null;
+    }
 }
