@@ -1,7 +1,6 @@
 package com.marithe.sysfact.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +31,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
+
 		String header = req.getHeader(SecurityConstants.HEADER_STRING);
 
 		if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
@@ -39,45 +39,46 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 			return;
 		}
 
-		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		try {
+			UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+		} catch (ExpiredJwtException ex) {
+			// Atrapamos la expiración y le pasamos el atributo al WebSecurityConfig
+			req.setAttribute("expired", ex.getMessage());
+		} catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
+			// Atrapamos cualquier otro error (token manipulado, mal formado, etc)
+			SecurityContextHolder.clearContext();
+		}
+
+		// Continuamos con la cadena de filtros.
 		chain.doFilter(req, res);
 	}
 
 	// Reads the JWT from the Authorization header, and then uses JWT to validate
 	// the token
-	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request)
+			throws ExpiredJwtException, SignatureException, MalformedJwtException, UnsupportedJwtException, IllegalArgumentException {
+
 		String token = request.getHeader(SecurityConstants.HEADER_STRING);
+
 		Usuario usuario = null;
 		GrantedAuthority authority = null;
 
 		if (token != null) {
+			// Al hacer el parse, si está expirado, lanzará ExpiredJwtException automáticamente hacia arriba
+			String user = io.jsonwebtoken.Jwts.parser()
+					.setSigningKey(SecurityConstants.SECRET)
+					.parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
+					.getBody()
+					.getSubject();
 
-			try {
-				// parse the token.
-				String user = Jwts.parser().setSigningKey(SecurityConstants.SECRET)
-						.parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, "")).getBody().getSubject();
-
-				if (user != null) {
-					// new arraylist means authorities
-
-					usuario = usuarioService.findByEmail(user.toString());
-
-					authority = new SimpleGrantedAuthority(usuario.getRol().getNombre());
-
-					return new UsernamePasswordAuthenticationToken(usuario.getCorreo(), usuario.getContrasena(),
-							Arrays.asList(authority));
-				}
-
-			} catch (ExpiredJwtException ex) {
-				// request.setAttribute("expired","El token ha expirado. Vuelva a loguearse");
-				request.setAttribute("expired", ex.getMessage());
-				throw new CredentialsExpiredException("El token ha expirado", ex);
-
+			if (user != null) {
+				// Si usas roles, aquí los cargas usando tu userService
+				return new UsernamePasswordAuthenticationToken(
+						user, null, new java.util.ArrayList<>());
 			}
-
+			return null;
 		}
-
 		return null;
 	}
 }
