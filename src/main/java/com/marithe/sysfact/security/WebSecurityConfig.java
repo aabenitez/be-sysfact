@@ -61,6 +61,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// Set Forbidden requests exception handler
 		http = http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and();
 
+		// Se permiten explicitamente las solicitudes de pre-flight options.
+		http.cors().and().authorizeRequests()
+				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
 		// Set permissions on endpoints
 		http.authorizeRequests()
 				// Our public endpoints
