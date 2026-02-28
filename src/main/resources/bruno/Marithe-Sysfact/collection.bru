@@ -9,8 +9,9 @@ auth:bearer {
 script:pre-request {
   const axios = require("axios");
   
-  // Verificamos si ya tenemos un token para no hacer login en cada click
+  // Solo hace login si la variable está vacía
   if (!bru.getVar("token")) {
+      console.log("No hay token activo. Solicitando uno nuevo...");
       try {
           const response = await axios.post("http://localhost:8080/sysfact/login", {
               username: "alcides.abel.benitez@gmail.com",
@@ -19,16 +20,21 @@ script:pre-request {
               headers: { "Content-Type": "application/json" }
           });
   
-          // Aseguramos la ruta correcta
-          const token = response.data.user.token;
+          const token = response.data?.user?.token;
           
-          if(token) {
+          if (token) {
               bru.setVar("token", token);
-              console.log("Token global actualizado exitosamente.");
+              console.log("Nuevo token guardado con éxito.");
           }
-  
       } catch (error) {
-          console.error("Error en Login Global:", error.message);
+          console.error("Error en Login automático:", error.message);
       }
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 401) {
+      console.log("Token inválido o expirado (401). Limpiando variable...");
+      bru.setVar("token", ""); 
   }
 }
