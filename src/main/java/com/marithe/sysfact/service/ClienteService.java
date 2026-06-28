@@ -2,13 +2,17 @@ package com.marithe.sysfact.service;
 
 import org.springframework.stereotype.Service;
 import com.marithe.sysfact.dao.ClienteDao;
-import com.marithe.sysfact.dao.impl.GenericServiceImpl;
 import com.marithe.sysfact.model.Cliente;
 
-@Service
-public class ClienteService extends GenericServiceImpl<Cliente> {
+import java.util.List;
 
-    public ClienteService(ClienteDao dao) {
-        super(dao);
-    }
+public interface ClienteService {
+
+    List<Cliente> getAll(Cliente obj);
+
+    Cliente findById(Long id); // Necesario para validar antes de actualizar
+
+    Cliente insert(Cliente obj);
+    void update(Cliente obj);
+    void delete(Long id);
 }

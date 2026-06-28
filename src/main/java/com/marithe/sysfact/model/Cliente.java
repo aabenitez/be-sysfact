@@ -8,8 +8,9 @@ public class Cliente extends BaseEntity {
 	private String apellidos;
 	@NotBlank(message = "El nombre no puede estar en blanco")
 	private String nombres;
-	@NotBlank(message = "El ruc o cédula no puede estar en blanco")
-	private String rucCi;
+	@NotBlank(message = "El Cédula o Ruc no puede estar en blanco")
+	private String ciRuc;
+	private String email;
 	@NotBlank(message = "El teléfono no puede estar en blanco")
 	private String telefono;
 
@@ -29,13 +30,15 @@ public class Cliente extends BaseEntity {
 		this.nombres = nombres;
 	}
 
-	public String getRucCi() {
-		return rucCi;
+	public String getCiRuc() {
+		return ciRuc;
 	}
 
-	public void setRucCi(String rucCi) {
-		this.rucCi = rucCi;
-	}
+	public void setCiRuc(String ciRuc) { this.ciRuc = ciRuc; }
+
+	public String getEmail() { return email; }
+
+	public void setEmail(String email) { this.email = email; }
 
 	public String getTelefono() {
 		return telefono;

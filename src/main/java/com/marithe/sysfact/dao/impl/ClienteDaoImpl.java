@@ -1,5 +1,6 @@
 package com.marithe.sysfact.dao.impl;
 
+import com.marithe.sysfact.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -26,7 +27,7 @@ public class ClienteDaoImpl implements ClienteDao {
     @Autowired
     private ClienteSql daosql;
 
-    @Override
+    //@Override
     public List<Cliente> getAll(Cliente obj) {
         String sql = daosql.getGetAll();
         List<Object> params = new ArrayList<>();
@@ -42,9 +43,19 @@ public class ClienteDaoImpl implements ClienteDao {
                 params.add("%" + obj.getApellidos() + "%");
             }
 
-            if (obj.getRucCi() != null) {
-                sql += " and ruc_ci=?";
-                params.add(obj.getRucCi());
+            if (obj.getCiRuc() != null) {
+                sql += " and ci_ruc=?";
+                params.add(obj.getCiRuc());
+            }
+
+            if (obj.getEmail() != null) {
+                sql += " email=?, ";
+                params.add(obj.getEmail());
+            }
+
+            if (obj.getTelefono() != null) {
+                sql += " telefono=?, ";
+                params.add(obj.getTelefono());
             }
         }
 
@@ -75,8 +86,9 @@ public class ClienteDaoImpl implements ClienteDao {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setString(1, obj.getApellidos());
                 ps.setString(2, obj.getNombres());
-                ps.setString(3, obj.getRucCi());
-                ps.setObject(4, obj.getTelefono(), Types.VARCHAR); // ojo cuando el campo admite valores nulos, usar
+                ps.setString(3, obj.getCiRuc());
+                ps.setString(4, obj.getEmail());
+                ps.setObject(5, obj.getTelefono(), Types.VARCHAR); // ojo cuando el campo admite valores nulos, usar
                 // setObject
                 return ps;
             }
@@ -89,34 +101,9 @@ public class ClienteDaoImpl implements ClienteDao {
     @Override
     public Cliente update(Cliente obj) {
         String sql = daosql.getUpdate();
-
-        List<Object> params = new ArrayList<>();
-
-        if (obj.getApellidos() != null) {
-            sql += " apellidos=?, ";
-            params.add(obj.getApellidos());
-        }
-
-        if (obj.getNombres() != null) {
-            sql += " nombres=?, ";
-            params.add(obj.getNombres());
-        }
-
-        if (obj.getRucCi() != null) {
-            sql += " ruc_ci=?, ";
-            params.add(obj.getRucCi());
-        }
-
-        if (obj.getTelefono() != null) {
-            sql += " telefono=?, ";
-            params.add(obj.getTelefono());
-        }
-
-        sql = sql.substring(0, sql.length() - 2); // quita la última coma antes del where
-        sql += " where id=?";
-        params.add(obj.getId());
-
-        jdbcTemplate.update(sql, params.toArray());
+        Object[] params = new Object[] {obj.getNombres(), obj.getApellidos(), obj.getCiRuc(),
+                obj.getEmail(), obj.getTelefono(), obj.getId()};
+        jdbcTemplate.update(sql, params);
         return obj;
     }
 

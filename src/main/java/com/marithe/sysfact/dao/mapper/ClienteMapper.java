@@ -15,7 +15,8 @@ public class ClienteMapper implements RowMapper<Cliente> {
 		cliente.setId(rs.getLong("id"));
 		cliente.setApellidos(rs.getString("apellidos"));
 		cliente.setNombres(rs.getString("nombres"));
-		cliente.setRucCi(rs.getString("ruc_ci"));
+		cliente.setCiRuc(rs.getString("ci_ruc"));
+		cliente.setEmail(rs.getString("email"));
 		cliente.setTelefono(rs.getString("telefono"));
 
 		return cliente;
