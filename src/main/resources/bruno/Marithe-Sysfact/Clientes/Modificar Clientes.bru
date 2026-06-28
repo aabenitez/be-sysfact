@@ -1,0 +1,22 @@
+meta {
+  name: Modificar Clientes
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/sysfact/clientes/8
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "id": 8,
+      "nombres": "Nombre de Prueba 33",
+      "apellidos": "Apellido de Prueba 33",
+      "ciRuc": "3322554-5",
+      "email": "nombreyapellidoprueba@gmail.com",
+      "telefono": "0985 888 555"
+  }
+}

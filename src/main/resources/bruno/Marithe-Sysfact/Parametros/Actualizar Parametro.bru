@@ -1,0 +1,21 @@
+meta {
+  name: Actualizar Parametro
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/sysfact/parametros/9
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": 9,
+    "descripcion": "Tasa de IVA General 2",
+    "codigo": "impuesto.iva.general 2",
+    "activo": true,
+    "valor": "25"
+  }
+}

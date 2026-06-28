@@ -1,0 +1,20 @@
+meta {
+  name: Insertar Parametro
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/sysfact/parametros
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "descripcion": "Tasa de IVA General",
+    "codigo": "impuesto.iva.general",
+    "activo": true,
+    "valor": "18"
+  }
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Insertar Clientes
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/sysfact/clientes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "id": 8,
+      "nombres": "Nombre de Prueba",
+      "apellidos": "Apellido de Prueba",
+      "ciRuc": "3322554-5",
+      "email": "nombreyapellidoprueba@gmail.com",
+      "telefono": "0985 752 343"
+  }
+}

@@ -33,7 +33,10 @@ script:pre-request {
 }
 
 script:post-response {
-  if (res.getStatus() === 401) {
+  const status = res.getStatus();
+  const body = res.getBody();
+  
+  if (status === 401 || status === 403 || (status === 500 && body?.message?.includes("expired"))) {
       console.log("Token inválido o expirado (401). Limpiando variable...");
       bru.setVar("token", ""); 
   }
