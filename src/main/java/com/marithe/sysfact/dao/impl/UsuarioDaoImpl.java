@@ -1,6 +1,7 @@
 package com.marithe.sysfact.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -43,12 +44,25 @@ public class UsuarioDaoImpl implements UsuarioDao {
         return user;
     }
 
-    @Override
+    /*@Override
     public Usuario findByEmail(String email) {
         Usuario user = jdbcTemplate.queryForObject(userDaoSql.getFindByEmail(), new Object[]{email},
                 new UsuarioMapper());
         LOGGER.log(Level.FINE, "findByEmail users query:", user);
         return user;
+    }*/
+
+    @Override
+    public Usuario findByEmail(String email) {
+        try {
+            Usuario user = jdbcTemplate.queryForObject(userDaoSql.getFindByEmail(), new Object[]{email},
+                    new UsuarioMapper());
+            LOGGER.log(Level.FINE, "findByEmail users query found: {0}", email);
+            return user;
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.log(Level.WARNING, "No se encontro usuario con email: {0}", email);
+            return null; // El filtro de seguridad manejará el null correctamente
+        }
     }
 
     @Override
