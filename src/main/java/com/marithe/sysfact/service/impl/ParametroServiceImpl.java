@@ -26,6 +26,11 @@ public class ParametroServiceImpl implements ParametroService {
     }
 
     @Override
+    public Parametro findById(Long id) {
+        return dao.findById(id);
+    }
+
+    @Override
     public Parametro insert(Parametro obj) {
         dao.insert(obj);
         return obj;
@@ -41,9 +46,4 @@ public class ParametroServiceImpl implements ParametroService {
         dao.delete(id);
     }
 
-    @Override
-    public Parametro findById(Long id) {
-        // Implementar en el DAO similar al findByCodigo pero usando el ID
-        return dao.findById(id);
-    }
 }

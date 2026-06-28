@@ -1,8 +1,10 @@
 package com.marithe.sysfact.controller;
 
+import com.marithe.sysfact.model.BaseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import com.marithe.sysfact.model.Parametro;
@@ -53,7 +55,7 @@ public class ParametroController {
     }
 
     @PostMapping()
-    public ResponseEntity<Parametro> insert(@RequestBody @Valid Parametro obj) {
+    public ResponseEntity<Parametro> insert(@RequestBody @Validated(BaseEntity.OnCreate.class) Parametro obj) {
         try {
             Parametro nuevo = parametroService.insert(obj);
             return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
@@ -62,10 +64,11 @@ public class ParametroController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // Esta anotación habilita el método PUT para esta ruta
     public ResponseEntity<Parametro> update(@RequestBody @Valid Parametro obj, @PathVariable Long id) {
-        Parametro actual = parametroService.findById(id);
-        if (actual == null) {
+        // Lógica de actualización
+        Parametro objCurrent = parametroService.findById(id);
+        if (objCurrent == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         obj.setId(id);

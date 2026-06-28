@@ -3,7 +3,11 @@ package com.marithe.sysfact.model;
 import javax.validation.constraints.NotBlank;
 
 public class Parametro extends BaseEntity {
-    @NotBlank(message = "La descripcion no puede estar en blanco")
+    /*@NotBlank(message = "La descripcion no puede estar en blanco")
+    private String descripcion;*/
+
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class},
+              message = "La descripcion no puede estar en blanco")
     private String descripcion;
 
     @NotBlank(message = "El codigo no puede estar en blanco")

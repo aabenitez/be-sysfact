@@ -50,6 +50,7 @@ public class ParametroDaoImpl implements ParametroDao {
 
     @Override
     public Parametro findById(Long id) {
-        return null;
+        String sql = daoSql.getFindById();
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new ParametroMapper());
     }
 }

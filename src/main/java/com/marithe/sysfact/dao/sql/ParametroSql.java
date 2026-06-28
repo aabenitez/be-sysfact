@@ -14,11 +14,15 @@ public class ParametroSql {
     @Value("${parametro.findByCodigo}")
     private String findByCodigo;
 
+    @Value("${parametro.findById}")
+    private String findById;
+
     public String getGetAll() {
         return getAll;
     }
 
-    public String getFindByCodigo() {
-        return findByCodigo;
-    }
+    public String getFindByCodigo() { return findByCodigo; }
+
+    public String getFindById() { return findById; }
+
 }
