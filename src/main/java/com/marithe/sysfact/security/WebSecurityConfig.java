@@ -78,12 +78,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
 
+				.antMatchers(HttpMethod.GET, "/parametros/**").hasAnyAuthority("Cargador", "Administrador")
+				.antMatchers(HttpMethod.POST, "/parametros/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.PUT, "/parametros/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.DELETE, "/parametros/**").hasAnyAuthority("Administrador")
+
 				.antMatchers(HttpMethod.GET, "/articulos/**").hasAnyAuthority("Cargador", "Administrador")
 				.antMatchers(HttpMethod.POST, "/articulos/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.PUT, "/articulos/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/articulos/**").hasAnyAuthority("Administrador")
 
-				.antMatchers("/roles/**").hasAnyAuthority("Administrador")
+				//.antMatchers("/roles/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.GET, "/roles/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.POST, "/roles/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.PUT, "/roles/**").hasAnyAuthority("Administrador")
+				.antMatchers(HttpMethod.DELETE, "/roles/**").hasAnyAuthority("Administrador")
 
 				.antMatchers(HttpMethod.GET, "/clientes/**").hasAnyAuthority("Cargador", "Administrador")
 				.antMatchers(HttpMethod.POST, "/clientes/**").hasAnyAuthority("Administrador")

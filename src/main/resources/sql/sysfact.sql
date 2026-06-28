@@ -15,8 +15,8 @@ CREATE TABLE public.cliente
 (
     id SERIAL,
     ci_ruc VARCHAR(20) NOT NULL,
-    nombre VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL,
+    nombres VARCHAR(50) NOT NULL,
+    apellidos VARCHAR(50) NOT NULL,
     email VARCHAR(100) NULL,
     telefono VARCHAR(20) null,
     CONSTRAINT pk_cliente PRIMARY KEY (id)
@@ -168,13 +168,13 @@ SELECT setval('stock_id_seq', 7);
 
 -----
 
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (1, 'Benitez', 'Antonio Abelino', '5444777-5', '0985 752 343');
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (2, 'Cáceres', 'Maria Teresa', '4558334-9', '0982 888 444');
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (3, 'Martinez', 'Juan José', '2203855-2', '0993 555 888');
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (4, 'González', 'María Antonia', '2551887-2', '0991 733 555');
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (5, 'Cabrera', 'Alberto Damián', '7551584-8', '0971 665 999');
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (6, 'Dominguez', 'Sebastián ', '3995554-5', '0981 777 333');
-INSERT INTO public.cliente (id, apellido, nombre, ci_ruc, telefono) VALUES (7, 'Caballero ', 'Maria Josefina', '5321456-7', '0961 123 456');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (1, 'Benitez', 'Antonio Abelino', '5444777-5', 'antabelbenitez@gmail.com', '0985 752 343');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (2, 'Cáceres', 'Maria Teresa', '4558334-9', 'mariaterecacerez@hotmail.com', '0982 888 444');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (3, 'Martinez', 'Juan José', '2203855-2', 'jjmartinez@gmail.com', '0993 555 888');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (4, 'González', 'María Antonia', '2551887-2', 'mariaantoniagonz@yahoo.com', '0991 733 555');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (5, 'Cabrera', 'Alberto Damián', '7551584-8', 'adamiancabrera@gmail.com', '0971 665 999');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (6, 'Dominguez', 'Sebastián ', '3995554-5', 'sebasdom@outlook.com', '0981 777 333');
+INSERT INTO public.cliente (id, apellidos, nombres, ci_ruc, email, telefono) VALUES (7, 'Caballero ', 'Maria Josefina', '5321456-7', 'majosefinacab@hotmail.com', '0961 123 456');
 SELECT setval('cliente_id_seq', 7);
 
 -----
