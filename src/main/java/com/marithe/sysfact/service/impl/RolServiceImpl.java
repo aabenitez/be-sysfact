@@ -8,7 +8,6 @@ import com.marithe.sysfact.service.RolService;
 
 import java.util.List;
 
-
 @Service
 public class RolServiceImpl implements RolService{
 	
@@ -36,9 +35,6 @@ public class RolServiceImpl implements RolService{
 	}
 
 	@Override
-	public void delete(Long id) {
-		dao.delete(id);
-		
-	}
+	public void delete(Long id) { dao.delete(id); }
 
 }

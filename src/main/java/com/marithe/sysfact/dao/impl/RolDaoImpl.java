@@ -48,7 +48,7 @@ public class RolDaoImpl implements RolDao {
 	@Override
 	public Rol insert(Rol obj) {
 		String sql = daoSql.getInsert();
-		Object[] params = new Object[] { obj.getNombre() };
+		Object[] params = new Object[] { obj.getNombre(), obj.getPermisos() };
 		jdbcTemplate.update(sql, params);
 		return obj;
 	}
@@ -56,7 +56,7 @@ public class RolDaoImpl implements RolDao {
 	@Override
 	public Rol update(Rol obj) {
 		String sql = daoSql.getUpdate();
-		Object[] params = new Object[] { obj.getNombre(), obj.getId() };
+		Object[] params = new Object[] { obj.getNombre(), obj.getPermisos(), obj.getId() };
 		jdbcTemplate.update(sql, params);
 		return obj;
 	}

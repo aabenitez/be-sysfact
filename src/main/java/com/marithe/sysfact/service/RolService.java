@@ -16,5 +16,4 @@ public interface RolService {
 
 	void delete(Long id);
 
-
 }
