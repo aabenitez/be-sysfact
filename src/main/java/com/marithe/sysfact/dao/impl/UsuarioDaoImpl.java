@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import com.marithe.sysfact.dao.UsuarioDao;
 import com.marithe.sysfact.dao.mapper.UsuarioMapper;
-import com.marithe.sysfact.dao.sql.UsuarioDaoSql;
+import com.marithe.sysfact.dao.sql.UsuarioSql;
 import com.marithe.sysfact.model.Usuario;
 
 import java.sql.Connection;
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class UsuarioDaoImpl implements UsuarioDao {
 
     @Autowired
-    private UsuarioDaoSql userDaoSql;
+    private UsuarioSql userDaoSql;
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;

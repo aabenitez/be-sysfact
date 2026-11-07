@@ -1,4 +1,4 @@
-package com.marithe.sysfact.dao.impl;
+package com.marithe.sysfact.service.impl;
 
 import com.marithe.sysfact.model.BaseEntity;
 import com.marithe.sysfact.resources.GenericDao;

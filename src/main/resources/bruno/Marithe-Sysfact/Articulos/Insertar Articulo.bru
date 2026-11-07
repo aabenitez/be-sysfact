@@ -1,0 +1,26 @@
+meta {
+  name: Insertar Articulo
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/sysfact/articulos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre": "Planta Pequeña de Azalea",
+    "descripcion": "Ideal para interiores y semi-sombra",
+    "precio": 22000.00,
+    "unidadMedida": {
+      "id": 1
+    },
+    "proveedor": {
+      "id": 1
+    },
+    "nombreImagen": "azalea_p.jpg"
+  }
+}

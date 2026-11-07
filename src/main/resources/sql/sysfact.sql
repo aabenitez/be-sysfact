@@ -1,6 +1,38 @@
 ----------------------------------------
 -- Creación de la Estructura de la BD --
 ----------------------------------------
+CREATE TABLE public.rol
+(
+    id serial,
+    nombre character varying(100) NOT NULL,
+    permisos character varying(100) NULL,
+    CONSTRAINT pk_rol PRIMARY KEY (id)
+);
+
+CREATE TABLE public.usuario
+(
+    id serial,
+    nombres character varying(100) NOT NULL,
+    apellidos character varying(100) NOT NULL,
+    correo character varying(100) NOT NULL,
+    rol_id bigint NOT NULL,
+    contrasena character varying(200) NOT NULL,
+    password_token text NULL,
+    CONSTRAINT pk_usuario PRIMARY KEY (id),
+    CONSTRAINT fk_usuario_rol FOREIGN KEY (rol_id)
+        REFERENCES public.rol(id)
+);
+
+CREATE TABLE public.parametros
+(
+    id serial NOT NULL,
+    descripcion varchar(255) NOT NULL,
+    codigo varchar(255) NOT NULL,
+    activo bool DEFAULT TRUE,
+    valor varchar(500) NOT NULL,
+    CONSTRAINT parametros_pkey PRIMARY KEY (id)
+);
+
 CREATE TABLE public.proveedor
 (
     id SERIAL,
@@ -70,9 +102,12 @@ CREATE TABLE public.venta
     total_descuento DECIMAL(19,2) NOT NULL,
     total_factura DECIMAL(19,2) NULL,
     cliente_id BIGINT null,
+    usuario_id BIGINT NOT NULL,
     CONSTRAINT pk_venta PRIMARY KEY (id),
     CONSTRAINT fk_venta_cliente_id FOREIGN KEY(cliente_id)
         REFERENCES public.cliente(id),
+    CONSTRAINT fk_venta_usuario_id FOREIGN KEY (usuario_id)
+        REFERENCES public.usuario (id),
     CONSTRAINT uq_venta UNIQUE (id, cliente_id, fecha),
     CONSTRAINT venta_condicion_venta_check
         CHECK (condicion_venta = ANY (ARRAY['CON'::bpchar, 'CRE'::bpchar]))
@@ -94,38 +129,6 @@ CREATE TABLE public.detalle_venta
         REFERENCES public.venta(id),
     CONSTRAINT fk_detalle_venta_articulo_id FOREIGN KEY(articulo_id)
         REFERENCES public.articulo(id)
-);
-
-CREATE TABLE public.rol
-(
-    id serial,
-    nombre character varying(100) NOT NULL,
-    permisos character varying(100) NULL,
-    CONSTRAINT pk_rol PRIMARY KEY (id)
-);
-
-CREATE TABLE public.usuario
-(
-    id serial,
-    nombres character varying(100) NOT NULL,
-    apellidos character varying(100) NOT NULL,
-    correo character varying(100) NOT NULL,
-    rol_id bigint NOT NULL,
-    contrasena character varying(200) NOT NULL,
-    password_token text NULL,
-    CONSTRAINT pk_usuario PRIMARY KEY (id),
-    CONSTRAINT fk_usuario_rol FOREIGN KEY (rol_id)
-        REFERENCES public.rol(id)
-);
-
-CREATE TABLE public.parametros
-(
-    id serial NOT NULL,
-    descripcion varchar(255) NOT NULL,
-    codigo varchar(255) NOT NULL,
-    activo bool DEFAULT TRUE,
-    valor varchar(500) NOT NULL,
-    CONSTRAINT parametros_pkey PRIMARY KEY (id)
 );
 
 ---------------------

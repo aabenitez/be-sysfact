@@ -1,0 +1,26 @@
+meta {
+  name: Modificar Articulo
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/sysfact/articulos/9
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre": "Planta Pequeña de Azalea - Modificada",
+    "descripcion": "Ideal para interiores, semi-sombra y balcones",
+    "precio": 24000.00,
+    "unidadMedida": {
+      "id": 1
+    },
+    "proveedor": {
+      "id": 1
+    },
+    "nombreImagen": "azalea_p_v2.jpg"
+  }
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Insertar Usuario
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/sysfact/usuarios
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "nombres": "Usuario 3",
+      "apellidos": "Cargador",
+      "correo": "usuario_3@correo.com",
+      "contrasena": "usuario3..",
+      "rol": {
+        "id": 2
+      }
+  }
+}

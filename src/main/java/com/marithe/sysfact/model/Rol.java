@@ -8,9 +8,7 @@ public class Rol extends BaseEntity {
 	private String nombre;
 	private String permisos;
 
-	public String getPermisos() {
-		return permisos;
-	}
+	public String getPermisos() { return permisos; }
 
 	public void setPermisos(String permisos) {
 		this.permisos = permisos;

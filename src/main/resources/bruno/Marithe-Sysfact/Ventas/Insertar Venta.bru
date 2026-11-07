@@ -1,0 +1,41 @@
+meta {
+  name: Insertar Venta
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/sysfact/ventas
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "condicionVenta": "CON",
+    "totalIva5": 0.00,
+    "totalIva10": 2000.00,
+    "totalExenta": 0.00,
+    "totalDescuento": 0.00,
+    "totalFactura": 20000.00,
+    "cliente": {
+      "id": 1
+    },
+    "usuario": {
+      "id": 1
+    },
+    "detallesVenta": [
+      {
+        "cantidad": 1,
+        "precioVenta": 20000.00,
+        "descuento": 0.00,
+        "exenta": 0.00,
+        "iva10": 2000.00,
+        "iva5": 0.00,
+        "articulo": {
+          "id": 2
+        }
+      }
+    ]
+  }
+}

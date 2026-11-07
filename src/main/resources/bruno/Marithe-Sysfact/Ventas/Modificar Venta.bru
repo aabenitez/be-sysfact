@@ -1,0 +1,18 @@
+meta {
+  name: Modificar Venta
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/sysfact/ventas/4
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "nombre": "Usuario Test 22",
+      "permisos": "[\"/unidad-de-medida\", \"/stock\"]"
+  }
+}

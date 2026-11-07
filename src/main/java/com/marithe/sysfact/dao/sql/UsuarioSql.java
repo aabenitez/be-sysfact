@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:sql/dao/usuario/usuario_sql.properties")
-public class UsuarioDaoSql {
+public class UsuarioSql {
 
 	@Value("${query.getAll}")
 	private String getAll;
