@@ -52,23 +52,26 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
 			throws AuthenticationException {
 
-		ApiUserDTO user = null;
-		Usuario usuario = null;
-		GrantedAuthority authority = null;
+		ApiUserDTO user;
 		try {
-
 			user = new ObjectMapper().readValue(req.getInputStream(), ApiUserDTO.class);
-
-			usuario = userService.findByEmail(user.getUsername());
-
-			authority = new SimpleGrantedAuthority(usuario.getRol().getNombre());
-
-			LOGGER.log(Level.FINE, "api user:", user);
-
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, "No se pudo leer el cuerpo del login", e);
+			throw new BadCredentialsException("El cuerpo de la solicitud de login es inválido");
 		}
+
+		if (user == null || user.getUsername() == null || user.getPassword() == null) {
+			throw new BadCredentialsException("Debe indicar usuario y contraseña");
+		}
+
+		Usuario usuario = userService.findByEmail(user.getUsername());
+		if (usuario == null || usuario.getRol() == null) {
+			// Mismo mensaje que una contraseña incorrecta, para no revelar qué emails existen
+			throw new BadCredentialsException("Bad credentials");
+		}
+
+		GrantedAuthority authority = new SimpleGrantedAuthority(usuario.getRol().getNombre());
+		LOGGER.log(Level.FINE, "api user: {0}", user.getUsername());
 
 		return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),
 				user.getPassword(), Arrays.asList(authority)));
@@ -106,20 +109,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
 
-		if (failed.getClass() == BadCredentialsException.class) {
+		String mensaje = (failed instanceof BadCredentialsException)
+				? "Error al autenticar. Credenciales de acceso incorrectas. "
+				: "Error al autenticar. ";
+		ErrorResponse body = new ErrorResponse(HttpStatus.UNAUTHORIZED, mensaje,
+				Arrays.asList(failed.getMessage()));
 
-			String mensaje = "Error al autenticar. Credenciales de acceso incorrectas. ";
-			ErrorResponse body = new ErrorResponse(HttpStatus.UNAUTHORIZED, mensaje,
-					Arrays.asList(failed.getMessage()));
+		// El status y el content-type deben fijarse antes de escribir el cuerpo
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 
-			response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-			response.setStatus(401);
-			response.setContentType("application/json");
-
-			LOGGER.severe("Bitácora de errores: " + failed.getLocalizedMessage());
-			failed.printStackTrace();
-
-		}
+		LOGGER.warning("Bitácora de errores: " + failed.getLocalizedMessage());
 
 	}
 }
