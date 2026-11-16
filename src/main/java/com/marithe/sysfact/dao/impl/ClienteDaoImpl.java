@@ -84,8 +84,9 @@ public class ClienteDaoImpl implements ClienteDao {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-                ps.setString(1, obj.getApellidos());
-                ps.setString(2, obj.getNombres());
+                // Same order as cliente.insert: (nombres, apellidos, ci_ruc, email, telefono)
+                ps.setString(1, obj.getNombres());
+                ps.setString(2, obj.getApellidos());
                 ps.setString(3, obj.getCiRuc());
                 ps.setString(4, obj.getEmail());
                 ps.setObject(5, obj.getTelefono(), Types.VARCHAR); // ojo cuando el campo admite valores nulos, usar
@@ -112,4 +113,17 @@ public class ClienteDaoImpl implements ClienteDao {
         jdbcTemplate.update(daosql.getDelete(), id);
     }
 
+
+    @Override
+    public List<Cliente> findByCiRuc(String ciRuc) {
+        String sql = "select * from cliente where upper(trim(ci_ruc)) = upper(trim(?))";
+        return jdbcTemplate.query(sql, new Object[]{ciRuc}, new ClienteMapper());
+    }
+
+    @Override
+    public long countVentas(Long clienteId) {
+        Long n = jdbcTemplate.queryForObject("select count(*) from venta where cliente_id = ?",
+                new Object[]{clienteId}, Long.class);
+        return n == null ? 0 : n;
+    }
 }

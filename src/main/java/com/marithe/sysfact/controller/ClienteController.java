@@ -29,7 +29,7 @@ public class ClienteController {
 
 		Cliente obj = service.findById(id);
 		if (obj == null) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			return ResponseEntity.ok(obj);
 		}
