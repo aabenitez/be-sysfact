@@ -4,16 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.marithe.sysfact.service.VentaService;
+import com.marithe.sysfact.exception.BusinessLogicException;
+import com.marithe.sysfact.model.Articulo;
 import com.marithe.sysfact.model.Venta;
 import com.marithe.sysfact.model.DetalleVenta;
+import com.marithe.sysfact.dao.ArticuloDao;
 import com.marithe.sysfact.dao.VentaDao;
+import com.marithe.sysfact.util.CalculadoraIva;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VentaServiceImpl implements VentaService {
 
     @Autowired
     private VentaDao ventaDao;
+
+    @Autowired
+    private ArticuloDao articuloDao;
 
     @Override
     public List<Venta> getList(Venta obj) {
@@ -37,14 +46,30 @@ public class VentaServiceImpl implements VentaService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Venta insert(Venta venta) {
-        Venta nuevaVenta = ventaDao.insert(venta);
+        // El IVA y los totales se calculan aquí con la tasa de cada artículo;
+        // no se confía en los montos que envía el cliente.
+        Map<Long, Integer> tasas = new HashMap<>();
+        CalculadoraIva.calcular(venta, detalle -> tasaDelArticulo(detalle, tasas));
 
-        if (venta.getDetallesVenta() != null) {
-            for (DetalleVenta detalle : venta.getDetallesVenta()) {
-                ventaDao.insertDetalle(detalle, nuevaVenta.getId());
-                ventaDao.descontarStock(detalle.getArticulo().getId(), detalle.getCantidad());
-            }
+        Venta nuevaVenta = ventaDao.insert(venta);
+        for (DetalleVenta detalle : venta.getDetallesVenta()) {
+            ventaDao.insertDetalle(detalle, nuevaVenta.getId());
+            ventaDao.descontarStock(detalle.getArticulo().getId(), detalle.getCantidad());
         }
         return nuevaVenta;
+    }
+
+    private int tasaDelArticulo(DetalleVenta detalle, Map<Long, Integer> cache) {
+        if (detalle.getArticulo() == null || detalle.getArticulo().getId() == null) {
+            throw new BusinessLogicException("Cada línea de la venta debe indicar el artículo.");
+        }
+        Long id = detalle.getArticulo().getId();
+        return cache.computeIfAbsent(id, key -> {
+            Articulo articulo = articuloDao.getById(key);
+            if (articulo == null) {
+                throw new BusinessLogicException("El artículo " + key + " no existe.");
+            }
+            return articulo.getTasaIva();
+        });
     }
 }

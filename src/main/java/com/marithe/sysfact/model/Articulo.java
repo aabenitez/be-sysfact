@@ -1,17 +1,28 @@
 package com.marithe.sysfact.model;
 
 import java.math.BigDecimal;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Articulo extends BaseEntity {
 
     @NotBlank(message = "El nombre del artículo no puede estar en blanco")
+    @Size(max = 100, message = "El nombre del artículo no puede superar los 100 caracteres")
     private String nombre;
 
     private String descripcion;
 
+    @NotNull(message = "Debe especificar el precio del artículo")
+    @DecimalMin(value = "0", message = "El precio no puede ser negativo")
     private BigDecimal precio;
+
+    /**
+     * Tasa de IVA del artículo: 10, 5 o 0 (exenta). Si no se envía al crear, se usa el parámetro
+     * impuesto.iva.general.
+     */
+    private Integer tasaIva;
 
     @NotNull(message = "Debe especificar una unidad de medida")
     private UnidadMedida unidadMedida; // Mapea unidad_medida_id
@@ -50,6 +61,9 @@ public class Articulo extends BaseEntity {
 
     public Proveedor getProveedor() { return proveedor; }
     public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+
+    public Integer getTasaIva() { return tasaIva; }
+    public void setTasaIva(Integer tasaIva) { this.tasaIva = tasaIva; }
 
     public String getNombreImagen() { return nombreImagen; }
     public void setNombreImagen(String nombreImagen) { this.nombreImagen = nombreImagen; }

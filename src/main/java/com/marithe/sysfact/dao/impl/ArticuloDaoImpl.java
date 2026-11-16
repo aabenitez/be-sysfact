@@ -5,6 +5,7 @@ import com.marithe.sysfact.dao.sql.ArticuloSql;
 import com.marithe.sysfact.dao.mapper.ArticuloMapper;
 import com.marithe.sysfact.model.Articulo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -47,7 +48,12 @@ public class ArticuloDaoImpl implements ArticuloDao {
         String sql = daoSql.getFindById();
         logger.info("sql a ejecutar: " + sql);
         logger.info("parametros del sql: " + id);
-        return jdbcTemplate.queryForObject(sql, new Object[] { id }, new ArticuloMapper());
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[] { id }, new ArticuloMapper());
+        } catch (EmptyResultDataAccessException e) {
+            // Sin fila: el controlador responde 404 en lugar de 500.
+            return null;
+        }
     }
 
     @Override
@@ -65,6 +71,7 @@ public class ArticuloDaoImpl implements ArticuloDao {
             ps.setLong(4, obj.getUnidadMedida().getId());
             ps.setLong(5, obj.getProveedor().getId());
             ps.setString(6, obj.getNombreImagen());
+            ps.setInt(7, obj.getTasaIva());
             return ps;
         }, keyHolder);
 
@@ -83,6 +90,7 @@ public class ArticuloDaoImpl implements ArticuloDao {
                 obj.getUnidadMedida().getId(),
                 obj.getProveedor().getId(),
                 obj.getNombreImagen(),
+                obj.getTasaIva(),
                 obj.getId()
         };
         logger.info("sql a ejecutar (update articulo): " + sql);
@@ -95,5 +103,21 @@ public class ArticuloDaoImpl implements ArticuloDao {
         String sql = daoSql.getDelete();
         logger.info("sql a ejecutar (delete articulo): " + sql);
         jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public void insertStock(Long articuloId) {
+        jdbcTemplate.update(daoSql.getInsertStock(), articuloId);
+    }
+
+    @Override
+    public void deleteStock(Long articuloId) {
+        jdbcTemplate.update(daoSql.getDeleteStock(), articuloId);
+    }
+
+    @Override
+    public long countVentas(Long articuloId) {
+        Long n = jdbcTemplate.queryForObject(daoSql.getCountVentas(), new Object[] { articuloId }, Long.class);
+        return n == null ? 0 : n;
     }
 }

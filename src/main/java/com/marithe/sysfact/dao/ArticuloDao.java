@@ -12,4 +12,12 @@ public interface ArticuloDao {
     Articulo insert(Articulo obj);
     Articulo update(Articulo obj);
     void delete(Long id);
+
+    /** Crea la fila de stock del artículo con existencia 0 (si no existe). */
+    void insertStock(Long articuloId);
+
+    void deleteStock(Long articuloId);
+
+    /** Cantidad de líneas de venta que usan el artículo. */
+    long countVentas(Long articuloId);
 }

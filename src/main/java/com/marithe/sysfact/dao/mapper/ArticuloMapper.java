@@ -16,6 +16,7 @@ public class ArticuloMapper implements RowMapper<Articulo> {
         articulo.setNombre(rs.getString("nombre"));
         articulo.setDescripcion(rs.getString("descripcion"));
         articulo.setPrecio(rs.getBigDecimal("precio"));
+        articulo.setTasaIva(rs.getInt("tasa_iva"));
         articulo.setNombreImagen(rs.getString("nombre_imagen"));
 
         // Mapear UnidadMedida

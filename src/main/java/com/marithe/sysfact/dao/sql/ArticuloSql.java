@@ -23,9 +23,21 @@ public class ArticuloSql {
     @Value("${articulo.delete}")
     private String delete;
 
+    @Value("${articulo.insertStock}")
+    private String insertStock;
+
+    @Value("${articulo.deleteStock}")
+    private String deleteStock;
+
+    @Value("${articulo.countVentas}")
+    private String countVentas;
+
     public String getGetAll() { return getAll; }
     public String getFindById() { return findById; }
     public String getInsert() { return insert; }
     public String getUpdate() { return update; }
     public String getDelete() { return delete; }
+    public String getInsertStock() { return insertStock; }
+    public String getDeleteStock() { return deleteStock; }
+    public String getCountVentas() { return countVentas; }
 }

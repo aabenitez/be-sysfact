@@ -72,7 +72,9 @@ CREATE TABLE public.articulo
     unidad_medida_id BIGINT NOT NULL,
     proveedor_id BIGINT NOT NULL,
     nombre_imagen VARCHAR(100) NULL,
+    tasa_iva SMALLINT NOT NULL DEFAULT 10,
     CONSTRAINT pk_articulo PRIMARY KEY (id),
+    CONSTRAINT ck_articulo_tasa_iva CHECK (tasa_iva IN (0, 5, 10)),
     CONSTRAINT fk_articulos_proveedor_id FOREIGN KEY(proveedor_id)
         REFERENCES public.proveedor(id),
     CONSTRAINT fk_articulos_unidad_medida_id FOREIGN KEY(unidad_medida_id)
