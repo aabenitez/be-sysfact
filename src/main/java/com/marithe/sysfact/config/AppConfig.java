@@ -72,16 +72,24 @@ public class AppConfig {
 		javaMailSender.setPassword(emailPassword);
 		javaMailSender.setProtocol("smtp");
 
-		javaMailSender.setJavaMailProperties(getMailProperties());
+		javaMailSender.setJavaMailProperties(getMailProperties(emailPort.trim()));
 
 		return javaMailSender;
 	}
 
-	private Properties getMailProperties() {
+	private Properties getMailProperties(String port) {
         Properties properties = new Properties();
-        properties.put("spring.mail.protocol", "smtp");
-        properties.put("mail.smtps.starttls.enable", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.auth", "true");
+        if ("465".equals(port)) {
+            // Port 465 speaks TLS from the first byte (SMTPS); STARTTLS would hang there.
+            properties.put("mail.smtp.ssl.enable", "true");
+        } else {
+            properties.put("mail.smtp.starttls.enable", "true");
+        }
+        // Without timeouts an unreachable mail server blocks the sending thread forever.
+        properties.put("mail.smtp.connectiontimeout", "10000");
+        properties.put("mail.smtp.timeout", "15000");
+        properties.put("mail.smtp.writetimeout", "15000");
         return properties;
 	}
 }

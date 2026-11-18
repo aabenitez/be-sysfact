@@ -118,9 +118,11 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     @Override
     public Usuario findByPasswordToken(String token) {
-        return jdbcTemplate.queryForObject(userDaoSql.getFindByPasswordToken(),
+        // Only a token that has not expired matches; null when there is none.
+        List<Usuario> users = jdbcTemplate.query(userDaoSql.getFindByPasswordToken(),
                 new Object[]{token},
                 new UsuarioMapper());
+        return users.isEmpty() ? null : users.get(0);
     }
 
     @Override

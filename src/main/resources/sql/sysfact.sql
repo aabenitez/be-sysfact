@@ -18,6 +18,7 @@ CREATE TABLE public.usuario
     rol_id bigint NOT NULL,
     contrasena character varying(200) NOT NULL,
     password_token text NULL,
+    password_token_vence timestamp with time zone NULL,
     CONSTRAINT pk_usuario PRIMARY KEY (id),
     CONSTRAINT fk_usuario_rol FOREIGN KEY (rol_id)
         REFERENCES public.rol(id)

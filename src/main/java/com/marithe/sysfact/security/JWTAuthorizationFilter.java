@@ -20,6 +20,7 @@ import com.marithe.sysfact.service.UsuarioService;
 import com.marithe.sysfact.util.SecurityConstants;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -43,7 +44,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 			return;
 		}
 
-		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+		UsernamePasswordAuthenticationToken authentication = null;
+		try {
+			authentication = getAuthentication(req);
+		} catch (ExpiredJwtException e) {
+			req.setAttribute("expired", e.getMessage());
+		} catch (JwtException | IllegalArgumentException e) {
+			// Forged token, or signed with a previous key (the key changes when the server restarts
+			// without sysfact.jwt.secret): the request goes on unauthenticated, so protected
+			// endpoints answer 401 and the frontend sends the user back to the login page.
+		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		chain.doFilter(req, res);
