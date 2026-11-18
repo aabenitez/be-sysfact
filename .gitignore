@@ -78,3 +78,5 @@ nb-configuration.xml
 
 ### Miscellaneous ###
 *.log
+# Despliegue: datos del servidor (no se suben)
+deploy/config.env

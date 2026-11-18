@@ -1,0 +1,4 @@
+# Los scripts y la configuración del despliegue corren en Linux: siempre con fin de línea LF.
+deploy/**/*.sh       text eol=lf
+deploy/*.sh          text eol=lf
+deploy/*.env.example text eol=lf
