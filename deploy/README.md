@@ -149,6 +149,7 @@ Entrá y verificá:
 - [ ] Iniciás sesión con tu usuario.
 - [ ] El Inicio muestra los números de ventas, clientes, artículos, etc.
 - [ ] **Subí el logo de nuevo** en Parámetros → Logo de la empresa (el archivo de tu máquina no se copia).
+      Ahí mismo podés subir el ícono de la pestaña (favicon).
 - [ ] Probá crear y borrar un artículo de prueba.
 
 ## 5. Actualizar a una versión nueva

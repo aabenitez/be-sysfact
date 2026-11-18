@@ -1,6 +1,7 @@
 package com.marithe.sysfact.controller;
 
-import com.marithe.sysfact.service.EmpresaLogoService;
+import com.marithe.sysfact.service.EmpresaImagenService;
+import com.marithe.sysfact.service.EmpresaImagenService.Imagen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class EmpresaController {
 
     @Autowired
-    private EmpresaLogoService logoService;
+    private EmpresaImagenService imagenService;
 
     /**
      * Public (the login page shows it too). Answers 404 when no custom logo is configured, so the
@@ -29,13 +30,45 @@ public class EmpresaController {
      */
     @GetMapping("/logo")
     public ResponseEntity<Resource> getLogo() {
-        Optional<Path> logo = logoService.getLogo();
-        if (!logo.isPresent()) {
+        return serve(Imagen.LOGO);
+    }
+
+    @PostMapping(value = "/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> uploadLogo(@RequestParam("archivo") MultipartFile archivo) {
+        return upload(Imagen.LOGO, archivo);
+    }
+
+    @DeleteMapping("/logo")
+    public ResponseEntity<Void> resetLogo() {
+        imagenService.reset(Imagen.LOGO);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Public, like the logo. Answers 404 when none is configured (the default favicon.ico is used). */
+    @GetMapping("/favicon")
+    public ResponseEntity<Resource> getFavicon() {
+        return serve(Imagen.FAVICON);
+    }
+
+    @PostMapping(value = "/favicon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> uploadFavicon(@RequestParam("archivo") MultipartFile archivo) {
+        return upload(Imagen.FAVICON, archivo);
+    }
+
+    @DeleteMapping("/favicon")
+    public ResponseEntity<Void> resetFavicon() {
+        imagenService.reset(Imagen.FAVICON);
+        return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity<Resource> serve(Imagen imagen) {
+        Optional<Path> found = imagenService.get(imagen);
+        if (!found.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        Path file = logo.get();
+        Path file = found.get();
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(logoService.getContentType(file)))
+                .contentType(MediaType.parseMediaType(imagenService.getContentType(file)))
                 .cacheControl(CacheControl.noCache())
                 .header("X-Content-Type-Options", "nosniff")
                 // An uploaded SVG opened on its own must not be able to run scripts.
@@ -43,15 +76,8 @@ public class EmpresaController {
                 .body(new FileSystemResource(file));
     }
 
-    @PostMapping(value = "/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String, String>> uploadLogo(@RequestParam("archivo") MultipartFile archivo) {
-        String path = logoService.store(archivo);
+    private ResponseEntity<Map<String, String>> upload(Imagen imagen, MultipartFile archivo) {
+        String path = imagenService.store(imagen, archivo);
         return new ResponseEntity<>(Collections.singletonMap("valor", path), HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/logo")
-    public ResponseEntity<Void> resetLogo() {
-        logoService.reset();
-        return ResponseEntity.noContent().build();
     }
 }

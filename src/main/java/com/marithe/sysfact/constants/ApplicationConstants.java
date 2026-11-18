@@ -9,4 +9,5 @@ public class ApplicationConstants {
     public static final String REPORTS_PATH = "reports.path";
     public static final String UPLOADS_PATH = "uploads.path";
     public static final String EMPRESA_LOGO = "empresa.logo";
+    public static final String EMPRESA_FAVICON = "empresa.favicon";
 }

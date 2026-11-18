@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, SecurityConstants.LOGIN_URL).permitAll()
 				.antMatchers(HttpMethod.POST, "/auth").permitAll()
 				.antMatchers(HttpMethod.POST, "/recuperar-clave/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/empresa/logo").permitAll()
+				.antMatchers(HttpMethod.GET, "/empresa/logo", "/empresa/favicon").permitAll()
 				// Our private endpoints
 
 				.antMatchers("/empresa/**").hasAnyAuthority("Administrador")
