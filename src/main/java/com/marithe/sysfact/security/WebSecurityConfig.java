@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				// Our public endpoints
 				.antMatchers(HttpMethod.POST, SecurityConstants.LOGIN_URL).permitAll()
-				.antMatchers(HttpMethod.POST, "/usuarios").permitAll().antMatchers(HttpMethod.POST, "/auth").permitAll()
+				.antMatchers(HttpMethod.POST, "/auth").permitAll()
 				.antMatchers(HttpMethod.POST, "/recuperar-clave/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/empresa/logo").permitAll()
 				// Our private endpoints
@@ -112,6 +112,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.DELETE, "/ventas/**").hasAnyAuthority("Administrador")
 
 				.antMatchers("/reportes/**").hasAnyAuthority("Administrador")
+
+				// Users and their roles: only an administrator creates, edits, lists or deletes them.
+				.antMatchers("/usuarios", "/usuarios/**").hasAnyAuthority("Administrador")
 
 				.anyRequest().authenticated();
 
