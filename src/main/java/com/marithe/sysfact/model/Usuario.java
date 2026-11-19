@@ -18,8 +18,8 @@ public class Usuario extends BaseEntity {
 	private String correo;
 	@NestedIdConstraint(message = "El id del rol no puede estar nulo")
 	private Rol rol;
+	/** Required when creating a user; when editing, blank keeps the current one (checked in the service). */
 	@JsonProperty(access = Access.WRITE_ONLY)
-	@NotBlank(message = "La contraseña no puede estar en blanco")
 	private String contrasena;
 
 	public String getNombres() {

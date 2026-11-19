@@ -39,9 +39,9 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     @Override
     public Usuario findById(Long id) {
-        Usuario user = jdbcTemplate.queryForObject(userDaoSql.getFindById(), new Object[]{id}, new UsuarioMapper());
-        LOGGER.log(Level.FINE, "findById users query:", user);
-        return user;
+        // null when it does not exist, so the controller can answer 404.
+        List<Usuario> users = jdbcTemplate.query(userDaoSql.getFindById(), new Object[]{id}, new UsuarioMapper());
+        return users.isEmpty() ? null : users.get(0);
     }
 
     /*@Override
@@ -123,6 +123,39 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 new Object[]{token},
                 new UsuarioMapper());
         return users.isEmpty() ? null : users.get(0);
+    }
+
+    @Override
+    public List<Usuario> findByCorreoIgnoreCase(String correo) {
+        return jdbcTemplate.query(userDaoSql.getGetAll() + " where lower(trim(u.correo)) = lower(trim(?))",
+                new Object[]{correo}, new UsuarioMapper());
+    }
+
+    @Override
+    public void updatePassword(Long id, String hash) {
+        jdbcTemplate.update("update usuario set contrasena = ? where id = ?", hash, id);
+    }
+
+    @Override
+    public long countVentas(Long usuarioId) {
+        Long n = jdbcTemplate.queryForObject("select count(*) from venta where usuario_id = ?",
+                new Object[]{usuarioId}, Long.class);
+        return n == null ? 0 : n;
+    }
+
+    @Override
+    public long countByRolNombre(String rolNombre) {
+        Long n = jdbcTemplate.queryForObject(
+                "select count(*) from usuario u join rol r on u.rol_id = r.id where r.nombre = ?",
+                new Object[]{rolNombre}, Long.class);
+        return n == null ? 0 : n;
+    }
+
+    @Override
+    public String findRolNombre(Long rolId) {
+        List<String> names = jdbcTemplate.queryForList("select nombre from rol where id = ?",
+                new Object[]{rolId}, String.class);
+        return names.isEmpty() ? null : names.get(0);
     }
 
     @Override

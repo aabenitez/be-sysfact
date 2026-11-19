@@ -25,4 +25,16 @@ public interface UsuarioDao {
 	void setPasswordToken(Usuario obj, String token);
 
 	Usuario findByPasswordToken(String token);
+
+	/** Users whose e-mail matches, ignoring case and surrounding spaces. */
+	List<Usuario> findByCorreoIgnoreCase(String correo);
+
+	void updatePassword(Long id, String hash);
+
+	long countVentas(Long usuarioId);
+
+	long countByRolNombre(String rolNombre);
+
+	/** Name of the role, or null if it does not exist. */
+	String findRolNombre(Long rolId);
 }

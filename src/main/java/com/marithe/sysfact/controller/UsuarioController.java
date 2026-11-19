@@ -31,19 +31,8 @@ public class UsuarioController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> findById(@PathVariable Long id) {
-		try {
-			Usuario user = userService.findById(id);
-			LOGGER.log(Level.FINE, "user found:", user);
-
-			if (user == null) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-
-			return ResponseEntity.ok(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		Usuario user = userService.findById(id);
+		return user == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : ResponseEntity.ok(user);
 	}
 
 	@PostMapping()
@@ -59,12 +48,14 @@ public class UsuarioController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		obj.setId(id);
-		userService.update(obj);
-		return new ResponseEntity<>(obj, HttpStatus.OK);
+		return ResponseEntity.ok(userService.update(obj));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		if (userService.findById(id) == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		userService.delete(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
