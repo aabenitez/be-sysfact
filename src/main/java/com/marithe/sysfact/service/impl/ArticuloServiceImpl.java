@@ -5,6 +5,7 @@ import com.marithe.sysfact.exception.BusinessLogicException;
 import com.marithe.sysfact.model.Articulo;
 import com.marithe.sysfact.service.ArticuloService;
 import com.marithe.sysfact.service.ImpuestoService;
+import com.marithe.sysfact.service.ArticuloImagenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,9 @@ public class ArticuloServiceImpl implements ArticuloService {
 
     @Autowired
     private ImpuestoService impuestoService;
+
+    @Autowired
+    private ArticuloImagenService imagenService;
 
     @Override
     public List<Articulo> getList(Articulo obj) {
@@ -37,6 +41,8 @@ public class ArticuloServiceImpl implements ArticuloService {
         }
         ImpuestoService.validarTasa(obj.getTasaIva());
         normalizar(obj);
+        // The photo is uploaded separately (POST /articulos/{id}/imagen).
+        obj.setNombreImagen(null);
 
         Articulo nuevo = articuloDao.insert(obj);
         // Toda venta descuenta stock, así que cada artículo necesita su fila (existencia inicial 0).
@@ -47,11 +53,13 @@ public class ArticuloServiceImpl implements ArticuloService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Articulo update(Articulo obj) {
+        Articulo actual = articuloDao.getById(obj.getId());
         if (obj.getTasaIva() == null) {
             // Si no se envía, se conserva la tasa que ya tenía.
-            Articulo actual = articuloDao.getById(obj.getId());
             obj.setTasaIva(actual != null ? actual.getTasaIva() : impuestoService.tasaGeneral());
         }
+        // The photo only changes through its own endpoints; whatever the form sends is ignored.
+        obj.setNombreImagen(actual != null ? actual.getNombreImagen() : null);
         ImpuestoService.validarTasa(obj.getTasaIva());
         normalizar(obj);
         return articuloDao.update(obj);
@@ -65,8 +73,12 @@ public class ArticuloServiceImpl implements ArticuloService {
             throw new BusinessLogicException("No se puede eliminar el artículo porque figura en "
                     + ventas + (ventas == 1 ? " venta registrada." : " ventas registradas."));
         }
+        Articulo actual = articuloDao.getById(id);
         articuloDao.deleteStock(id);
         articuloDao.delete(id);
+        if (actual != null) {
+            imagenService.borrarAlConfirmar(actual.getNombreImagen());
+        }
     }
 
     private static void normalizar(Articulo obj) {

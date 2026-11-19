@@ -13,6 +13,9 @@ public interface ArticuloDao {
     Articulo update(Articulo obj);
     void delete(Long id);
 
+    /** Sets (or clears, with null) the stored photo file name. */
+    void updateImagen(Long id, String nombreImagen);
+
     /** Crea la fila de stock del artículo con existencia 0 (si no existe). */
     void insertStock(Long articuloId);
 

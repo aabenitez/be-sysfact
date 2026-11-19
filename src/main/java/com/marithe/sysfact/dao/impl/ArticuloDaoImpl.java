@@ -106,6 +106,11 @@ public class ArticuloDaoImpl implements ArticuloDao {
     }
 
     @Override
+    public void updateImagen(Long id, String nombreImagen) {
+        jdbcTemplate.update("update public.articulo set nombre_imagen = ? where id = ?", nombreImagen, id);
+    }
+
+    @Override
     public void insertStock(Long articuloId) {
         jdbcTemplate.update(daoSql.getInsertStock(), articuloId);
     }

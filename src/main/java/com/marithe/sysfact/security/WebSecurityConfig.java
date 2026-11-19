@@ -72,6 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/auth").permitAll()
 				.antMatchers(HttpMethod.POST, "/recuperar-clave/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/empresa/logo", "/empresa/favicon").permitAll()
+				// Article photos: an <img> cannot send the token (see ArticuloController#imagen).
+				.antMatchers(HttpMethod.GET, "/articulos/*/imagen").permitAll()
 				// Our private endpoints
 
 				.antMatchers("/empresa/**").hasAnyAuthority("Administrador")
