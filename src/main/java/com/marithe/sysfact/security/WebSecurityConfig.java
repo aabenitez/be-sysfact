@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers("/empresa/**").hasAnyAuthority("Administrador")
 
-				.antMatchers(HttpMethod.GET, "/unidades-de-medida/**").hasAnyAuthority("Cargador", "Administrador")
+				.antMatchers(HttpMethod.GET, "/unidades-de-medida/**").hasAnyAuthority("Cargador", "Cajero", "Administrador")
 				.antMatchers(HttpMethod.POST, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.PUT, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/unidades-de-medida/**").hasAnyAuthority("Administrador")
@@ -91,7 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, "/proveedores/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/proveedores/**").hasAnyAuthority("Administrador")
 
-				.antMatchers(HttpMethod.GET, "/articulos/**").hasAnyAuthority("Cargador", "Administrador")
+				.antMatchers(HttpMethod.GET, "/articulos/**").hasAnyAuthority("Cargador", "Cajero", "Administrador")
 				.antMatchers(HttpMethod.POST, "/articulos/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.PUT, "/articulos/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/articulos/**").hasAnyAuthority("Administrador")
@@ -101,17 +101,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, "/roles/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/roles/**").hasAnyAuthority("Administrador")
 
-				.antMatchers(HttpMethod.GET, "/clientes/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/clientes/**").hasAnyAuthority("Administrador")
+				// Cajero: registers new clients while invoicing, but does not edit or delete them.
+				.antMatchers(HttpMethod.GET, "/clientes/**").hasAnyAuthority("Cargador", "Cajero", "Administrador")
+				.antMatchers(HttpMethod.POST, "/clientes/**").hasAnyAuthority("Cajero", "Administrador")
 				.antMatchers(HttpMethod.PUT, "/clientes/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/clientes/**").hasAnyAuthority("Administrador")
 
-				.antMatchers(HttpMethod.GET, "/ventas/**").hasAnyAuthority("Cargador", "Administrador")
-				.antMatchers(HttpMethod.POST, "/ventas/**").hasAnyAuthority("Administrador")
-				.antMatchers(HttpMethod.PUT, "/ventas/**").hasAnyAuthority("Administrador")
+				// Cajero: creates, edits and cancels (POST /ventas/{id}/anular) sales; VentaServiceImpl
+				// limits it to same-day sales and list prices. Every change goes to the audit log.
+				.antMatchers(HttpMethod.GET, "/ventas/**").hasAnyAuthority("Cargador", "Cajero", "Administrador")
+				.antMatchers(HttpMethod.POST, "/ventas/**").hasAnyAuthority("Cajero", "Administrador")
+				.antMatchers(HttpMethod.PUT, "/ventas/**").hasAnyAuthority("Cajero", "Administrador")
 				.antMatchers(HttpMethod.DELETE, "/ventas/**").hasAnyAuthority("Administrador")
 
 				.antMatchers("/reportes/**").hasAnyAuthority("Administrador")
+
+				.antMatchers("/auditoria", "/auditoria/**").hasAnyAuthority("Administrador")
 
 				// Users and their roles: only an administrator creates, edits, lists or deletes them.
 				.antMatchers("/usuarios", "/usuarios/**").hasAnyAuthority("Administrador")

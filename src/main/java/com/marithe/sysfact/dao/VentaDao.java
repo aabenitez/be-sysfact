@@ -17,4 +17,14 @@ public interface VentaDao {
     void descontarStock(Long articuloId, Long cantidad);
 
     List<DetalleVenta> getDetallesByVentaId(Long ventaId);
+
+    /** Updates the header of an issued sale; returns false if it does not exist or is cancelled. */
+    boolean update(Venta venta);
+
+    void deleteDetalles(Long ventaId);
+
+    void devolverStock(Long articuloId, Long cantidad);
+
+    /** Marks an issued sale as cancelled; returns false if it does not exist or was already cancelled. */
+    boolean anular(Long ventaId, Long usuarioId, String motivo);
 }

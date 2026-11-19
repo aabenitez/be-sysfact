@@ -177,6 +177,14 @@ ejecutalo en el VPS **antes** de desplegar:
 sudo -u postgres psql -d sysfact -f migracion_xxx.sql
 ```
 
+La migración `migracion_venta_anulacion_auditoria.sql` (anulación de ventas y registro de auditoría)
+necesita además el usuario de la base con el que se conecta el backend (`DB_USER` de `config.env`),
+porque le da permiso de leer y agregar en `auditoria`, pero no de modificar ni borrar:
+
+```bash
+sudo -u postgres psql -d sysfact -v app_user=sysfact -f migracion_venta_anulacion_auditoria.sql
+```
+
 **Volver atrás el frontend:** la versión anterior queda en `/var/www/sysfact.anterior`.
 
 ```bash

@@ -23,6 +23,18 @@ public class VentaSql {
     @Value("${venta.updateStock}")
     private String updateStock;
 
+    @Value("${venta.update}")
+    private String update;
+
+    @Value("${venta.deleteDetalles}")
+    private String deleteDetalles;
+
+    @Value("${venta.devolverStock}")
+    private String devolverStock;
+
+    @Value("${venta.anular}")
+    private String anular;
+
     @Value("${venta.getDetallesByVentaId}")
     private String getDetallesByVentaId;
 
@@ -49,4 +61,8 @@ public class VentaSql {
 
     public String getGetDetallesByVentaId() { return getDetallesByVentaId; }
 
+    public String getUpdate() { return update; }
+    public String getDeleteDetalles() { return deleteDetalles; }
+    public String getDevolverStock() { return devolverStock; }
+    public String getAnular() { return anular; }
 }

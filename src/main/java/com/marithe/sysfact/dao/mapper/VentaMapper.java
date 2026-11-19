@@ -20,6 +20,17 @@ public class VentaMapper implements RowMapper<Venta> {
         venta.setTotalExenta(rs.getBigDecimal("total_exenta"));
         venta.setTotalDescuento(rs.getBigDecimal("total_descuento"));
         venta.setTotalFactura(rs.getBigDecimal("total_factura"));
+        venta.setEstado(rs.getString("estado"));
+        venta.setAnulacionFecha(rs.getTimestamp("anulacion_fecha"));
+        venta.setAnulacionMotivo(rs.getString("anulacion_motivo"));
+        long anuladoPor = rs.getLong("anulacion_usuario_id");
+        if (!rs.wasNull()) {
+            Usuario anulador = new Usuario();
+            anulador.setId(anuladoPor);
+            anulador.setNombres(rs.getString("anulacion_usuario_nombres"));
+            anulador.setApellidos(rs.getString("anulacion_usuario_apellidos"));
+            venta.setAnulacionUsuario(anulador);
+        }
 
         // Mapeamos el Usuario
         Usuario usuario = new Usuario();

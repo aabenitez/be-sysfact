@@ -106,7 +106,14 @@ CREATE TABLE public.venta
     total_factura DECIMAL(19,2) NULL,
     cliente_id BIGINT null,
     usuario_id BIGINT NOT NULL,
+    estado VARCHAR(10) NOT NULL DEFAULT 'EMITIDA',
+    anulacion_fecha timestamp without time zone NULL,
+    anulacion_usuario_id BIGINT NULL,
+    anulacion_motivo VARCHAR(250) NULL,
     CONSTRAINT pk_venta PRIMARY KEY (id),
+    CONSTRAINT fk_venta_anulacion_usuario_id FOREIGN KEY (anulacion_usuario_id)
+        REFERENCES public.usuario (id),
+    CONSTRAINT venta_estado_check CHECK (estado IN ('EMITIDA', 'ANULADA')),
     CONSTRAINT fk_venta_cliente_id FOREIGN KEY(cliente_id)
         REFERENCES public.cliente(id),
     CONSTRAINT fk_venta_usuario_id FOREIGN KEY (usuario_id)
@@ -133,6 +140,27 @@ CREATE TABLE public.detalle_venta
     CONSTRAINT fk_detalle_venta_articulo_id FOREIGN KEY(articulo_id)
         REFERENCES public.articulo(id)
 );
+
+-- Audit log (see migracion_venta_anulacion_auditoria.sql). The backend role only gets SELECT and
+-- INSERT on it, so entries cannot be changed or deleted from the application.
+CREATE TABLE public.auditoria
+(
+    id BIGSERIAL,
+    fecha timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usuario_id BIGINT NULL,
+    usuario_nombre VARCHAR(201) NOT NULL,
+    usuario_rol VARCHAR(50) NULL,
+    accion VARCHAR(20) NOT NULL,
+    entidad VARCHAR(30) NOT NULL,
+    entidad_id BIGINT NULL,
+    detalle VARCHAR(500) NULL,
+    datos_antes JSONB NULL,
+    datos_despues JSONB NULL,
+    CONSTRAINT pk_auditoria PRIMARY KEY (id)
+);
+
+CREATE INDEX ix_auditoria_entidad ON public.auditoria (entidad, entidad_id);
+CREATE INDEX ix_auditoria_fecha ON public.auditoria (fecha DESC);
 
 ---------------------
 -- Datos de Prueba --

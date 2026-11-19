@@ -15,6 +15,14 @@ public class Venta extends BaseEntity {
     private Cliente cliente;
     private Usuario usuario;
     private List<DetalleVenta> detallesVenta;
+    /** EMITIDA or ANULADA. A cancelled sale is kept, with who cancelled it, when and why. */
+    private String estado;
+    private Date anulacionFecha;
+    private Usuario anulacionUsuario;
+    private String anulacionMotivo;
+
+    public static final String EMITIDA = "EMITIDA";
+    public static final String ANULADA = "ANULADA";
 
     // Constructores, Getters y Setters
     public Venta() {}
@@ -63,4 +71,16 @@ public class Venta extends BaseEntity {
 
     public List<DetalleVenta> getDetallesVenta() { return detallesVenta; }
     public void setDetallesVenta(List<DetalleVenta> detallesVenta) { this.detallesVenta = detallesVenta; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public Date getAnulacionFecha() { return anulacionFecha; }
+    public void setAnulacionFecha(Date anulacionFecha) { this.anulacionFecha = anulacionFecha; }
+
+    public Usuario getAnulacionUsuario() { return anulacionUsuario; }
+    public void setAnulacionUsuario(Usuario anulacionUsuario) { this.anulacionUsuario = anulacionUsuario; }
+
+    public String getAnulacionMotivo() { return anulacionMotivo; }
+    public void setAnulacionMotivo(String anulacionMotivo) { this.anulacionMotivo = anulacionMotivo; }
 }

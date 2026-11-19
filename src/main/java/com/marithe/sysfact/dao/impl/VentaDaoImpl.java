@@ -152,4 +152,27 @@ public class VentaDaoImpl implements VentaDao {
             return detalle;
         });
     }
+
+    @Override
+    public boolean update(Venta venta) {
+        Long clienteId = venta.getCliente() != null ? venta.getCliente().getId() : null;
+        return jdbcTemplate.update(ventaSql.getUpdate(), venta.getCondicionVenta(), venta.getTotalIva5(),
+                venta.getTotalIva10(), venta.getTotalExenta(), venta.getTotalDescuento(), venta.getTotalFactura(),
+                clienteId, venta.getId()) == 1;
+    }
+
+    @Override
+    public void deleteDetalles(Long ventaId) {
+        jdbcTemplate.update(ventaSql.getDeleteDetalles(), ventaId);
+    }
+
+    @Override
+    public void devolverStock(Long articuloId, Long cantidad) {
+        jdbcTemplate.update(ventaSql.getDevolverStock(), cantidad, articuloId);
+    }
+
+    @Override
+    public boolean anular(Long ventaId, Long usuarioId, String motivo) {
+        return jdbcTemplate.update(ventaSql.getAnular(), usuarioId, motivo, ventaId) == 1;
+    }
 }

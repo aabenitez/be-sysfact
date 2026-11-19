@@ -19,6 +19,8 @@ psql_sysfact <<EOF
 GRANT USAGE ON SCHEMA public TO "$DB_USER";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "$DB_USER";
 GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO "$DB_USER";
+-- The audit log is append-only: the application may read and add entries, never change them.
+REVOKE UPDATE, DELETE, TRUNCATE ON public.auditoria FROM "$DB_USER";
 EOF
 ok "Permisos otorgados"
 
