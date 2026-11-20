@@ -4,6 +4,7 @@ import com.marithe.sysfact.dao.UnidadMedidaDao;
 import com.marithe.sysfact.dao.sql.UnidadMedidaSql;
 import com.marithe.sysfact.model.UnidadMedida;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -30,10 +31,10 @@ public class UnidadMedidaDaoImpl implements UnidadMedidaDao {
 			sql += " and nombre like ?";
 			params.add("%" + obj.getNombre() + "%");
 		}
+		sql += " order by nombre";
 
 		logger.info("sql a ejecutar: " + sql);
 		logger.info("parametros del sql: " + params.toString());
-		// logger.info("parametros del sql: " + params.toString());
 		return jdbcTemplate.query(sql, params.toArray(), new BeanPropertyRowMapper<>(UnidadMedida.class));
 	}
 
@@ -42,14 +43,34 @@ public class UnidadMedidaDaoImpl implements UnidadMedidaDao {
 		String sql = daoSql.getFindById();
 		logger.info("sql a ejecutar: " + sql);
 		logger.info("parametros del sql: " + id);
-		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new BeanPropertyRowMapper<>(UnidadMedida.class));
+		try {
+			return jdbcTemplate.queryForObject(sql, new Object[] { id }, new BeanPropertyRowMapper<>(UnidadMedida.class));
+		} catch (EmptyResultDataAccessException e) {
+			// No row: the controller answers 404 instead of 500.
+			return null;
+		}
+	}
+
+	@Override
+	public List<UnidadMedida> findByNombre(String nombre) {
+		// Case-insensitive, so "maceta" and "Maceta" count as the same unit.
+		return jdbcTemplate.query("select * from unidad_medida where lower(nombre) = lower(?)",
+				new Object[] { nombre }, new BeanPropertyRowMapper<>(UnidadMedida.class));
+	}
+
+	@Override
+	public long countArticulos(Long id) {
+		Long n = jdbcTemplate.queryForObject("select count(*) from articulo where unidad_medida_id = ?",
+				new Object[] { id }, Long.class);
+		return n == null ? 0 : n;
 	}
 
 	@Override
 	public UnidadMedida insert(UnidadMedida obj) {
 		String sql = daoSql.getInsert();
-		Object[] params = new Object[] { obj.getNombre(), obj.getPlural() };
-		jdbcTemplate.update(sql, params);
+		logger.info("sql a ejecutar: " + sql);
+		Long id = jdbcTemplate.queryForObject(sql, new Object[] { obj.getNombre(), obj.getPlural() }, Long.class);
+		obj.setId(id);
 		return obj;
 	}
 
@@ -66,7 +87,6 @@ public class UnidadMedidaDaoImpl implements UnidadMedidaDao {
 		String sql = daoSql.getDelete();
 		jdbcTemplate.update(sql, id);
 		logger.info("id borrado: " + id);
-
 	}
 
 }

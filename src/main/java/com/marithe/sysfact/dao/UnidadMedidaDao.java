@@ -10,6 +10,12 @@ public interface UnidadMedidaDao {
 
 	UnidadMedida getById(Long id);
 
+	/** Units with this name, ignoring case (at most one, the name is unique). */
+	List<UnidadMedida> findByNombre(String nombre);
+
+	/** How many articles are sold in this unit. */
+	long countArticulos(Long id);
+
 	UnidadMedida insert(UnidadMedida obj);
 
 	UnidadMedida update(UnidadMedida obj);
