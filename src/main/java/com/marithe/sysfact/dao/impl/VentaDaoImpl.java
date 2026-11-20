@@ -143,10 +143,26 @@ public class VentaDaoImpl implements VentaDao {
             detalle.setIva5(rs.getBigDecimal("iva5"));
             detalle.setPrecioVenta(rs.getBigDecimal("precio_venta"));
 
-            // Mapeamos el Artículo básico asociado
+            // The article as it is now, complete (the audit log keeps a copy of it with each change).
             com.marithe.sysfact.model.Articulo articulo = new com.marithe.sysfact.model.Articulo();
             articulo.setId(rs.getLong("articulo_id"));
             articulo.setNombre(rs.getString("articulo_nombre"));
+            articulo.setDescripcion(rs.getString("articulo_descripcion"));
+            articulo.setPrecio(rs.getBigDecimal("articulo_precio"));
+            articulo.setTasaIva(rs.getInt("articulo_tasa_iva"));
+            articulo.setNombreImagen(rs.getString("articulo_nombre_imagen"));
+            com.marithe.sysfact.model.UnidadMedida um = new com.marithe.sysfact.model.UnidadMedida();
+            um.setId(rs.getLong("unidad_medida_id"));
+            um.setNombre(rs.getString("um_nombre"));
+            um.setPlural(rs.getString("um_plural"));
+            articulo.setUnidadMedida(um);
+            com.marithe.sysfact.model.Proveedor proveedor = new com.marithe.sysfact.model.Proveedor();
+            proveedor.setId(rs.getLong("proveedor_id"));
+            proveedor.setNombre(rs.getString("proveedor_nombre"));
+            proveedor.setContacto(rs.getString("proveedor_contacto"));
+            proveedor.setTelefono(rs.getString("proveedor_telefono"));
+            proveedor.setDireccion(rs.getString("proveedor_direccion"));
+            articulo.setProveedor(proveedor);
             detalle.setArticulo(articulo);
 
             return detalle;

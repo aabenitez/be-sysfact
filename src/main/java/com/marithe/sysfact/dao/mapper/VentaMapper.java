@@ -3,6 +3,7 @@ package com.marithe.sysfact.dao.mapper;
 import org.springframework.jdbc.core.RowMapper;
 import com.marithe.sysfact.model.Venta;
 import com.marithe.sysfact.model.Cliente;
+import com.marithe.sysfact.model.Rol;
 import com.marithe.sysfact.model.Usuario;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +30,8 @@ public class VentaMapper implements RowMapper<Venta> {
             anulador.setId(anuladoPor);
             anulador.setNombres(rs.getString("anulacion_usuario_nombres"));
             anulador.setApellidos(rs.getString("anulacion_usuario_apellidos"));
+            anulador.setCorreo(rs.getString("anulacion_usuario_correo"));
+            anulador.setRol(rol(rs, "anulacion_rol_"));
             venta.setAnulacionUsuario(anulador);
         }
 
@@ -38,6 +41,7 @@ public class VentaMapper implements RowMapper<Venta> {
         usuario.setNombres(rs.getString("usuario_nombres"));
         usuario.setApellidos(rs.getString("usuario_apellidos"));
         usuario.setCorreo(rs.getString("usuario_correo"));
+        usuario.setRol(rol(rs, "usuario_rol_"));
         venta.setUsuario(usuario);
 
         // Mapeamos el Cliente
@@ -54,5 +58,18 @@ public class VentaMapper implements RowMapper<Venta> {
         }
 
         return venta;
+    }
+
+    /** Role of a user (columns {prefix}id, {prefix}nombre, {prefix}permisos), or null without one. */
+    private static Rol rol(ResultSet rs, String prefijo) throws SQLException {
+        long id = rs.getLong(prefijo + "id");
+        if (rs.wasNull()) {
+            return null;
+        }
+        Rol rol = new Rol();
+        rol.setId(id);
+        rol.setNombre(rs.getString(prefijo + "nombre"));
+        rol.setPermisos(rs.getString(prefijo + "permisos"));
+        return rol;
     }
 }
