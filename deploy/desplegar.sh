@@ -52,17 +52,26 @@ fi
 
 if [[ -f sysfact.war ]]; then
   DEP=/opt/wildfly/standalone/deployments
-  rm -f "\$DEP"/sysfact.war.{deployed,failed,undeployed}
+  # WildFly is restarted instead of hot-redeploying: each hot redeploy of a Spring Boot war
+  # leaves the old classes in Metaspace, and after a few deploys it fails with OutOfMemoryError.
+  echo "    Deteniendo WildFly"
+  systemctl stop wildfly
+  rm -f "\$DEP"/sysfact.war.{deployed,failed,undeployed,isdeploying,pending,dodeploy}
   install -o wildfly -g wildfly -m 640 sysfact.war "\$DEP/sysfact.war.tmp"
   mv "\$DEP/sysfact.war.tmp" "\$DEP/sysfact.war"
+  systemctl start wildfly
   echo -n "    Desplegando el backend"
-  for _ in \$(seq 1 90); do
+  for _ in \$(seq 1 120); do
     if [[ -f "\$DEP/sysfact.war.deployed" ]]; then echo; echo "    ✔ Backend desplegado"; break; fi
     if [[ -f "\$DEP/sysfact.war.failed" ]]; then
       echo; echo "    ✘ Falló el despliegue:"; cat "\$DEP/sysfact.war.failed"; exit 1
     fi
     echo -n "."; sleep 2
   done
+  if [[ ! -f "\$DEP/sysfact.war.deployed" ]]; then
+    echo; echo "    ✘ El backend no terminó de desplegarse en 4 minutos. Revisá: sudo tail -n 100 /opt/wildfly/standalone/log/server.log"
+    exit 1
+  fi
 fi
 
 rm -rf /tmp/sysfact-deploy

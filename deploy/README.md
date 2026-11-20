@@ -170,6 +170,11 @@ bash desplegar.sh backend
 bash desplegar.sh frontend
 ```
 
+Al desplegar el backend, WildFly se reinicia (el sistema queda sin servicio entre 30 segundos y un
+minuto, y los usuarios tienen que volver a iniciar sesión). No se redespliega "en caliente" porque cada
+redespliegue de Spring Boot deja clases en memoria (Metaspace) y, después de unos cuantos, WildFly
+falla con `OutOfMemoryError: Metaspace` y el login responde 404.
+
 Si la versión nueva del backend cambia la base (un script en `src/main/resources/sql/migracion_*.sql`),
 ejecutalo en el VPS **antes** de desplegar:
 
