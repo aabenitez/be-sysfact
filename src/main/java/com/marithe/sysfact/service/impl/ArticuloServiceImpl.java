@@ -1,6 +1,7 @@
 package com.marithe.sysfact.service.impl;
 
 import com.marithe.sysfact.dao.ArticuloDao;
+import com.marithe.sysfact.dao.StockDao;
 import com.marithe.sysfact.exception.BusinessLogicException;
 import com.marithe.sysfact.model.Articulo;
 import com.marithe.sysfact.service.ArticuloService;
@@ -19,6 +20,9 @@ public class ArticuloServiceImpl implements ArticuloService {
 
     @Autowired
     private ImpuestoService impuestoService;
+
+    @Autowired
+    private StockDao stockDao;
 
     @Autowired
     private ArticuloImagenService imagenService;
@@ -47,7 +51,8 @@ public class ArticuloServiceImpl implements ArticuloService {
         Articulo nuevo = articuloDao.insert(obj);
         // Toda venta descuenta stock, así que cada artículo necesita su fila (existencia inicial 0).
         articuloDao.insertStock(nuevo.getId());
-        return nuevo;
+        stockDao.updateStockMinimo(nuevo.getId(), obj.getStockMinimo() == null ? 0 : obj.getStockMinimo());
+        return articuloDao.getById(nuevo.getId());
     }
 
     @Override
@@ -62,7 +67,12 @@ public class ArticuloServiceImpl implements ArticuloService {
         obj.setNombreImagen(actual != null ? actual.getNombreImagen() : null);
         ImpuestoService.validarTasa(obj.getTasaIva());
         normalizar(obj);
-        return articuloDao.update(obj);
+        articuloDao.update(obj);
+        // Without a value the minimum stock stays as it was (older clients do not send it).
+        if (obj.getStockMinimo() != null) {
+            stockDao.updateStockMinimo(obj.getId(), obj.getStockMinimo());
+        }
+        return articuloDao.getById(obj.getId());
     }
 
     @Override

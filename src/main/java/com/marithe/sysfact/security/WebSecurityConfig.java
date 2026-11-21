@@ -94,6 +94,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.DELETE, "/proveedores/**").hasAnyAuthority("Administrador")
 
 				.antMatchers(HttpMethod.GET, "/articulos/**").hasAnyAuthority("Cargador", "Cajero", "Administrador")
+				// Stock: the Cargador receives goods; only an Administrador corrects the count.
+				.antMatchers(HttpMethod.POST, "/articulos/*/stock/ingresos").hasAnyAuthority("Cargador", "Administrador")
+				.antMatchers(HttpMethod.POST, "/articulos/*/stock/ajustes").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.POST, "/articulos/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.PUT, "/articulos/**").hasAnyAuthority("Administrador")
 				.antMatchers(HttpMethod.DELETE, "/articulos/**").hasAnyAuthority("Administrador")

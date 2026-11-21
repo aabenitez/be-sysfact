@@ -190,6 +190,12 @@ porque le da permiso de leer y agregar en `auditoria`, pero no de modificar ni b
 sudo -u postgres psql -d sysfact -v app_user=sysfact -f migracion_venta_anulacion_auditoria.sql
 ```
 
+Lo mismo con `migracion_stock_movimientos.sql` (historial de stock y stock mínimo):
+
+```bash
+sudo -u postgres psql -d sysfact -v app_user=sysfact -f migracion_stock_movimientos.sql
+```
+
 **Volver atrás el frontend:** la versión anterior queda en `/var/www/sysfact.anterior`.
 
 ```bash

@@ -116,18 +116,6 @@ public class VentaDaoImpl implements VentaDao {
     }
 
     @Override
-    public void descontarStock(Long articuloId, Long cantidad) {
-        String sqlStock = ventaSql.getUpdateStock();
-
-        Object[] params = new Object[] { cantidad, articuloId };
-
-        logger.info("sql a ejecutar (descontar stock): " + sqlStock);
-        logger.info("parámetros stock: [Cantidad a restar: " + cantidad + ", Articulo ID: " + articuloId + "]");
-
-        jdbcTemplate.update(sqlStock, params);
-    }
-
-    @Override
     public List<DetalleVenta> getDetallesByVentaId(Long ventaId) {
         String sql = ventaSql.getGetDetallesByVentaId();
         logger.info("sql a ejecutar (buscar detalles): " + sql);
@@ -180,11 +168,6 @@ public class VentaDaoImpl implements VentaDao {
     @Override
     public void deleteDetalles(Long ventaId) {
         jdbcTemplate.update(ventaSql.getDeleteDetalles(), ventaId);
-    }
-
-    @Override
-    public void devolverStock(Long articuloId, Long cantidad) {
-        jdbcTemplate.update(ventaSql.getDevolverStock(), cantidad, articuloId);
     }
 
     @Override

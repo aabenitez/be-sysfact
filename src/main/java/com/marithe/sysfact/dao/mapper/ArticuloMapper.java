@@ -18,6 +18,9 @@ public class ArticuloMapper implements RowMapper<Articulo> {
         articulo.setPrecio(rs.getBigDecimal("precio"));
         articulo.setTasaIva(rs.getInt("tasa_iva"));
         articulo.setNombreImagen(rs.getString("nombre_imagen"));
+        java.math.BigDecimal existencia = rs.getBigDecimal("existencia");
+        articulo.setExistencia(existencia == null ? 0L : existencia.longValue());
+        articulo.setStockMinimo(rs.getLong("stock_minimo"));
 
         // Mapear UnidadMedida
         UnidadMedida um = new UnidadMedida();

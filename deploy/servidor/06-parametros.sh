@@ -21,6 +21,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "$DB_USER
 GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO "$DB_USER";
 -- The audit log is append-only: the application may read and add entries, never change them.
 REVOKE UPDATE, DELETE, TRUNCATE ON public.auditoria FROM "$DB_USER";
+-- Stock movements too: the history of every stock number cannot be rewritten.
+REVOKE UPDATE, DELETE, TRUNCATE ON public.movimiento_stock FROM "$DB_USER";
 EOF
 ok "Permisos otorgados"
 

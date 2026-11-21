@@ -87,7 +87,9 @@ CREATE TABLE public.stock
     id serial,
     articulo_id BIGINT NOT NULL,
     existencia numeric(19,2) NOT NULL,
+    stock_minimo BIGINT NOT NULL DEFAULT 0,
     CONSTRAINT pk_stock PRIMARY KEY (id),
+    CONSTRAINT ck_stock_minimo CHECK (stock_minimo >= 0),
     CONSTRAINT uq_stock_articulo_id UNIQUE (articulo_id),
     CONSTRAINT fk_stock_articulo_id FOREIGN KEY (articulo_id)
         REFERENCES public.articulo(id)
@@ -161,6 +163,34 @@ CREATE TABLE public.auditoria
 
 CREATE INDEX ix_auditoria_entidad ON public.auditoria (entidad, entidad_id);
 CREATE INDEX ix_auditoria_fecha ON public.auditoria (fecha DESC);
+
+-- Stock movements (see migracion_stock_movimientos.sql): goods received, adjustments, sales and
+-- cancellations. Append-only like the audit log; existencia is the stock after each movement.
+CREATE TABLE public.movimiento_stock
+(
+    id BIGSERIAL,
+    fecha timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    articulo_id BIGINT NOT NULL,
+    tipo VARCHAR(15) NOT NULL,
+    cantidad BIGINT NOT NULL,
+    existencia BIGINT NOT NULL,
+    usuario_id BIGINT NULL,
+    usuario_nombre VARCHAR(201) NOT NULL,
+    venta_id BIGINT NULL,
+    proveedor_id BIGINT NULL,
+    motivo VARCHAR(250) NULL,
+    CONSTRAINT pk_movimiento_stock PRIMARY KEY (id),
+    CONSTRAINT ck_movimiento_stock_tipo
+        CHECK (tipo IN ('INICIAL', 'INGRESO', 'AJUSTE', 'VENTA', 'DEVOLUCION')),
+    CONSTRAINT fk_movimiento_stock_articulo_id FOREIGN KEY (articulo_id)
+        REFERENCES public.articulo (id) ON DELETE CASCADE,
+    CONSTRAINT fk_movimiento_stock_venta_id FOREIGN KEY (venta_id)
+        REFERENCES public.venta (id),
+    CONSTRAINT fk_movimiento_stock_proveedor_id FOREIGN KEY (proveedor_id)
+        REFERENCES public.proveedor (id) ON DELETE SET NULL
+);
+
+CREATE INDEX ix_movimiento_stock_articulo ON public.movimiento_stock (articulo_id, id DESC);
 
 ---------------------
 -- Datos de Prueba --

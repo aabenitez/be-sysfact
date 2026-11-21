@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ import com.marithe.sysfact.model.Usuario;
 import com.marithe.sysfact.model.Venta;
 import com.marithe.sysfact.security.UsuarioActual;
 import com.marithe.sysfact.service.AuditoriaService;
+import com.marithe.sysfact.service.StockService;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -56,6 +58,8 @@ class VentaServiceImplTest {
 	private AuditoriaService auditoria;
 	@Mock
 	private UsuarioActual usuarioActual;
+	@Mock
+	private StockService stockService;
 	@InjectMocks
 	private VentaServiceImpl service;
 
@@ -128,7 +132,7 @@ class VentaServiceImplTest {
 
 		assertEquals(3L, creada.getUsuario().getId());
 		assertEquals(new BigDecimal("40000"), creada.getTotalFactura());
-		verify(ventaDao).descontarStock(MACETA, 2L);
+		verify(stockService).moverPorVenta(50L, Map.of(MACETA, -2L), "Factura N.º 000050");
 		verify(auditoria).registrar(eq(Auditoria.CREAR), eq(Auditoria.VENTA), eq(50L), anyString(), isNull(), any());
 	}
 
@@ -186,10 +190,9 @@ class VentaServiceImplTest {
 
 		service.update(8L, venta(null, null, null, linea(MACETA, 3, null), linea(TIERRA, 1, null)));
 
-		verify(ventaDao).devolverStock(MACETA, 1L);
 		verify(ventaDao).deleteDetalles(8L);
-		verify(ventaDao).descontarStock(MACETA, 3L);
-		verify(ventaDao).descontarStock(TIERRA, 1L);
+		// Net change only: 1 → 3 macetas is 2 more out; the tierra is new.
+		verify(stockService).moverPorVenta(8L, Map.of(MACETA, -2L, TIERRA, -1L), "Edición de la factura N.º 000008");
 		ArgumentCaptor<String> detalle = ArgumentCaptor.forClass(String.class);
 		verify(auditoria).registrar(eq(Auditoria.EDITAR), eq(Auditoria.VENTA), eq(8L), detalle.capture(), any(), any());
 		assertTrue(detalle.getValue().contains("Maceta 1 → 3"), detalle.getValue());
@@ -214,7 +217,8 @@ class VentaServiceImplTest {
 		service.anular(9L, "  Cliente devolvió la compra ");
 
 		verify(ventaDao).anular(9L, 3L, "Cliente devolvió la compra");
-		verify(ventaDao).devolverStock(MACETA, 2L);
+		verify(stockService).moverPorVenta(9L, Map.of(MACETA, 2L),
+				"Anulación de la factura N.º 000009: Cliente devolvió la compra");
 		ArgumentCaptor<String> detalle = ArgumentCaptor.forClass(String.class);
 		verify(auditoria).registrar(eq(Auditoria.ANULAR), eq(Auditoria.VENTA), eq(9L), detalle.capture(), any(), any());
 		assertEquals("Factura N.º 000009 (Gs. 40.000). Motivo: Cliente devolvió la compra", detalle.getValue());

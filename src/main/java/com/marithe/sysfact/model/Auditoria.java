@@ -14,10 +14,13 @@ public class Auditoria extends BaseEntity {
 	public static final String EDITAR = "EDITAR";
 	public static final String ANULAR = "ANULAR";
 	public static final String ELIMINAR = "ELIMINAR";
+	public static final String INGRESO = "INGRESO";
+	public static final String AJUSTE = "AJUSTE";
 
 	public static final String VENTA = "VENTA";
 	public static final String CLIENTE = "CLIENTE";
 	public static final String UNIDAD_MEDIDA = "UNIDAD_MEDIDA";
+	public static final String STOCK = "STOCK";
 
 	private Date fecha;
 	private Long usuarioId;

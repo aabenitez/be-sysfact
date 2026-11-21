@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.marithe.sysfact.service.AuditoriaService;
+import com.marithe.sysfact.service.StockService;
 import com.marithe.sysfact.service.VentaService;
 import com.marithe.sysfact.exception.BusinessLogicException;
 import com.marithe.sysfact.model.Articulo;
@@ -47,6 +48,9 @@ public class VentaServiceImpl implements VentaService {
     @Autowired
     private UsuarioActual usuarioActual;
 
+    @Autowired
+    private StockService stockService;
+
     @Override
     public List<Venta> getList(Venta obj) {
         List<Venta> ventas = ventaDao.getList(obj);
@@ -75,6 +79,8 @@ public class VentaServiceImpl implements VentaService {
 
         Venta nuevaVenta = ventaDao.insert(venta);
         insertarLineas(venta, nuevaVenta.getId());
+        stockService.moverPorVenta(nuevaVenta.getId(), diferencia(venta.getDetallesVenta(), null),
+                "Factura N.º " + numero(nuevaVenta.getId()));
 
         Venta guardada = getById(nuevaVenta.getId());
         auditoria.registrar(Auditoria.CREAR, Auditoria.VENTA, guardada.getId(), resumen(guardada), null, guardada);
@@ -93,14 +99,14 @@ public class VentaServiceImpl implements VentaService {
         venta.setId(id);
         prepararLineas(venta, actual);
 
-        for (DetalleVenta d : actual.getDetallesVenta()) {
-            ventaDao.devolverStock(d.getArticulo().getId(), d.getCantidad());
-        }
         if (!ventaDao.update(venta)) {
             throw new BusinessLogicException("La factura N.º " + numero(id) + " ya no se puede editar: fue anulada.");
         }
         ventaDao.deleteDetalles(id);
         insertarLineas(venta, id);
+        // Only the net change per article moves stock (2 → 3 macetas is one more out, not 2 in and 3 out).
+        stockService.moverPorVenta(id, diferencia(venta.getDetallesVenta(), actual.getDetallesVenta()),
+                "Edición de la factura N.º " + numero(id));
 
         Venta despues = getById(id);
         auditoria.registrar(Auditoria.EDITAR, Auditoria.VENTA, id,
@@ -127,9 +133,8 @@ public class VentaServiceImpl implements VentaService {
         if (!ventaDao.anular(id, usuarioActual.get().getId(), m)) {
             throw new BusinessLogicException("La factura N.º " + numero(id) + " ya está anulada.");
         }
-        for (DetalleVenta d : actual.getDetallesVenta()) {
-            ventaDao.devolverStock(d.getArticulo().getId(), d.getCantidad());
-        }
+        stockService.moverPorVenta(id, diferencia(null, actual.getDetallesVenta()),
+                "Anulación de la factura N.º " + numero(id) + ": " + m);
 
         Venta despues = getById(id);
         auditoria.registrar(Auditoria.ANULAR, Auditoria.VENTA, id,
@@ -208,8 +213,30 @@ public class VentaServiceImpl implements VentaService {
     private void insertarLineas(Venta venta, Long ventaId) {
         for (DetalleVenta detalle : venta.getDetallesVenta()) {
             ventaDao.insertDetalle(detalle, ventaId);
-            ventaDao.descontarStock(detalle.getArticulo().getId(), detalle.getCantidad());
         }
+    }
+
+    /**
+     * Stock change per article when a sale goes from the lines in {@code antes} to those in
+     * {@code ahora} (either may be null): units sold come out (negative), units no longer sold go back.
+     */
+    static Map<Long, Long> diferencia(List<DetalleVenta> ahora, List<DetalleVenta> antes) {
+        Map<Long, Long> cambios = new LinkedHashMap<>();
+        if (ahora != null) {
+            for (DetalleVenta d : ahora) {
+                cambios.merge(d.getArticulo().getId(), -cantidad(d), Long::sum);
+            }
+        }
+        if (antes != null) {
+            for (DetalleVenta d : antes) {
+                cambios.merge(d.getArticulo().getId(), cantidad(d), Long::sum);
+            }
+        }
+        return cambios;
+    }
+
+    private static long cantidad(DetalleVenta d) {
+        return d.getCantidad() == null ? 0 : d.getCantidad();
     }
 
     private Articulo articulo(DetalleVenta detalle, Map<Long, Articulo> cache) {

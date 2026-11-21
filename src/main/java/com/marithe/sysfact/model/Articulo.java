@@ -2,6 +2,8 @@ package com.marithe.sysfact.model;
 
 import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,6 +33,14 @@ public class Articulo extends BaseEntity {
     private Proveedor proveedor; // Mapea proveedor_id
 
     private String nombreImagen;
+
+    /** Units in stock now (read-only here: it changes through goods received, adjustments and sales). */
+    private Long existencia;
+
+    /** At or below this stock the article shows as low ("poco stock"). 0 = only when it runs out. */
+    @Min(value = 0, message = "El stock mínimo no puede ser negativo")
+    @Max(value = 1000000, message = "El stock mínimo puede ser de hasta 1.000.000")
+    private Long stockMinimo;
 
     // Constructores
     public Articulo() {}
@@ -67,4 +77,10 @@ public class Articulo extends BaseEntity {
 
     public String getNombreImagen() { return nombreImagen; }
     public void setNombreImagen(String nombreImagen) { this.nombreImagen = nombreImagen; }
+
+    public Long getExistencia() { return existencia; }
+    public void setExistencia(Long existencia) { this.existencia = existencia; }
+
+    public Long getStockMinimo() { return stockMinimo; }
+    public void setStockMinimo(Long stockMinimo) { this.stockMinimo = stockMinimo; }
 }
