@@ -22,6 +22,7 @@ public class VentaMapper implements RowMapper<Venta> {
         venta.setTotalDescuento(rs.getBigDecimal("total_descuento"));
         venta.setTotalFactura(rs.getBigDecimal("total_factura"));
         venta.setEstado(rs.getString("estado"));
+        venta.setCobrado(rs.getBigDecimal("cobrado"));
         venta.setAnulacionFecha(rs.getTimestamp("anulacion_fecha"));
         venta.setAnulacionMotivo(rs.getString("anulacion_motivo"));
         long anuladoPor = rs.getLong("anulacion_usuario_id");

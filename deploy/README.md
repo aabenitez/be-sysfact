@@ -24,6 +24,7 @@ Internet ──HTTPS──▶ nginx (443) ──┬─▶ /            Angular c
 | `copiar-base.sh` | Tu máquina (WSL) | Copia tu base local al VPS (una sola vez) |
 | `servidor/06-parametros.sh` | VPS | Ajusta rutas y enlaces de la tabla `parametros` al servidor |
 | `desplegar.sh` | Tu máquina (WSL) | Compila y publica una versión nueva (cada vez que hay cambios) |
+| `bajar-copias.sh` | Tu máquina (WSL) | Baja las copias de seguridad del VPS a tu máquina |
 
 ---
 
@@ -205,13 +206,25 @@ sudo mv /var/www/sysfact /var/www/sysfact.malo && sudo mv /var/www/sysfact.anter
 ## 6. Copias de seguridad
 
 - Se hacen solas todos los días a las 02:30 en `/var/backups/sysfact` (se guardan 14 días).
+  Cada copia se verifica con `pg_restore --list` y solo la puede leer root.
 - Copia manual en cualquier momento: `sudo sysfact-backup`
+- Resultado de cada copia: `sudo tail /var/log/sysfact-backup.log`
 - **Importante:** una copia que solo está en el VPS se pierde si se pierde el VPS.
-  Bajalas a tu máquina de vez en cuando:
+  Bajalas a tu máquina. Desde WSL, en `be-sysfact/deploy`:
   ```bash
-  scp 'usuario@IP_DEL_VPS:/var/backups/sysfact/*' ~/backups-sysfact/
+  bash bajar-copias.sh
   ```
-  (o configurá `rclone` para subirlas a Google Drive automáticamente).
+  Baja solo las copias nuevas a `BACKUP_LOCAL` (por defecto `~/backups-sysfact`), las guarda
+  90 días, verifica la última y avisa si tiene más de 36 horas. Si `BACKUP_LOCAL` está dentro
+  de OneDrive o Google Drive, las copias quedan además en la nube.
+
+  **Que se baje solo todos los días (Windows):** en PowerShell, una sola vez
+  (cambiá la ruta si tu repositorio está en otro lado):
+  ```powershell
+  schtasks /Create /SC DAILY /ST 09:00 /TN "Sysfact - bajar copias" /TR "wsl.exe -d Ubuntu-24.04 -- bash -lc 'cd /mnt/c/Users/User/OneDrive/Documentos/repo/be-sysfact/deploy && bash bajar-copias.sh >> ~/backups-sysfact.log 2>&1'"
+  ```
+  Si la PC está apagada a esa hora, la copia se baja la próxima vez que corra; las del VPS
+  duran 14 días.
 
 **Restaurar** una copia (en el VPS):
 

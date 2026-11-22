@@ -21,6 +21,7 @@ public class Auditoria extends BaseEntity {
 	public static final String CLIENTE = "CLIENTE";
 	public static final String UNIDAD_MEDIDA = "UNIDAD_MEDIDA";
 	public static final String STOCK = "STOCK";
+	public static final String COBRO = "COBRO";
 
 	private Date fecha;
 	private Long usuarioId;

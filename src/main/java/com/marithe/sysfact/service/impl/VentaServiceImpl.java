@@ -13,6 +13,8 @@ import com.marithe.sysfact.model.Cliente;
 import com.marithe.sysfact.model.Venta;
 import com.marithe.sysfact.model.DetalleVenta;
 import com.marithe.sysfact.dao.ArticuloDao;
+import com.marithe.sysfact.dao.CobroDao;
+import com.marithe.sysfact.service.CobroService;
 import com.marithe.sysfact.dao.VentaDao;
 import com.marithe.sysfact.security.UsuarioActual;
 import com.marithe.sysfact.util.CalculadoraIva;
@@ -51,12 +53,20 @@ public class VentaServiceImpl implements VentaService {
     @Autowired
     private StockService stockService;
 
+    @Autowired
+    private CobroDao cobroDao;
+
+    @Autowired
+    private CobroService cobroService;
+
     @Override
     public List<Venta> getList(Venta obj) {
         List<Venta> ventas = ventaDao.getList(obj);
+        int plazo = cobroService.plazoDias();
         // Para cada venta de la lista, buscamos y asociamos sus detalles
         for (Venta venta : ventas) {
             venta.setDetallesVenta(ventaDao.getDetallesByVentaId(venta.getId()));
+            ponerVencimiento(venta, plazo);
         }
         return ventas;
     }
@@ -66,6 +76,7 @@ public class VentaServiceImpl implements VentaService {
         Venta venta = ventaDao.getById(id);
         if (venta != null) {
             venta.setDetallesVenta(ventaDao.getDetallesByVentaId(venta.getId()));
+            ponerVencimiento(venta, cobroService.plazoDias());
         }
         return venta;
     }
@@ -98,6 +109,7 @@ public class VentaServiceImpl implements VentaService {
 
         venta.setId(id);
         prepararLineas(venta, actual);
+        validarContraCobros(actual, venta);
 
         if (!ventaDao.update(venta)) {
             throw new BusinessLogicException("La factura N.º " + numero(id) + " ya no se puede editar: fue anulada.");
@@ -129,6 +141,11 @@ public class VentaServiceImpl implements VentaService {
             return null;
         }
         validarModificable(actual, "anular");
+        BigDecimal cobrado = cobrado(id);
+        if (cobrado.signum() > 0) {
+            throw new BusinessLogicException("La factura N.º " + numero(id) + " tiene cobros por " + gs(cobrado)
+                    + ". Anulá primero los cobros.");
+        }
 
         if (!ventaDao.anular(id, usuarioActual.get().getId(), m)) {
             throw new BusinessLogicException("La factura N.º " + numero(id) + " ya está anulada.");
@@ -161,6 +178,44 @@ public class VentaServiceImpl implements VentaService {
         if (!usuarioActual.esAdministrador() && !esDeHoy(actual)) {
             throw new BusinessLogicException("Solo un Administrador puede " + accion
                     + " facturas de días anteriores. Esta es del " + fechaCorta(actual) + ".");
+        }
+    }
+
+    /**
+     * Once a credit sale has payments, an edit may not leave them pointing at something else: it
+     * stays on credit, with the same client, and its total cannot go below what was already paid.
+     * Takes the sale's lock, so a payment cannot slip in between this check and the update.
+     */
+    private void validarContraCobros(Venta actual, Venta nueva) {
+        BigDecimal cobrado = cobrado(actual.getId());
+        if (cobrado.signum() <= 0) {
+            return;
+        }
+        String f = "La factura N.º " + numero(actual.getId()) + " tiene cobros por " + gs(cobrado);
+        if (!"CRE".equals(nueva.getCondicionVenta())) {
+            throw new BusinessLogicException(f + ": tiene que seguir siendo a crédito.");
+        }
+        Long antes = actual.getCliente() == null ? null : actual.getCliente().getId();
+        Long despues = nueva.getCliente() == null ? null : nueva.getCliente().getId();
+        if (!Objects.equals(antes, despues)) {
+            throw new BusinessLogicException(f + ": no se puede cambiar el cliente.");
+        }
+        if (nueva.getTotalFactura() != null && nueva.getTotalFactura().compareTo(cobrado) < 0) {
+            throw new BusinessLogicException(f + ": el total no puede quedar por debajo de eso (quedaría "
+                    + gs(nueva.getTotalFactura()) + ").");
+        }
+    }
+
+    /** Valid payments of the sale, locking its row for the rest of the transaction. */
+    private BigDecimal cobrado(Long ventaId) {
+        BigDecimal c = cobroDao.cobradoParaActualizar(ventaId);
+        return c == null ? BigDecimal.ZERO : c;
+    }
+
+    private static void ponerVencimiento(Venta v, int plazoDias) {
+        if ("CRE".equals(v.getCondicionVenta()) && v.getFecha() != null) {
+            LocalDate vence = fecha(v).plusDays(plazoDias);
+            v.setVencimiento(vence.toString());
         }
     }
 

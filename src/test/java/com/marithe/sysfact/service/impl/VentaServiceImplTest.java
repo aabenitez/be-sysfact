@@ -32,6 +32,9 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import com.marithe.sysfact.dao.ArticuloDao;
+import com.marithe.sysfact.dao.CobroDao;
+import com.marithe.sysfact.model.Cliente;
+import com.marithe.sysfact.service.CobroService;
 import com.marithe.sysfact.dao.VentaDao;
 import com.marithe.sysfact.exception.BusinessLogicException;
 import com.marithe.sysfact.model.Articulo;
@@ -60,6 +63,10 @@ class VentaServiceImplTest {
 	private UsuarioActual usuarioActual;
 	@Mock
 	private StockService stockService;
+	@Mock
+	private CobroDao cobroDao;
+	@Mock
+	private CobroService cobroService;
 	@InjectMocks
 	private VentaServiceImpl service;
 
@@ -76,6 +83,8 @@ class VentaServiceImplTest {
 		when(articuloDao.getById(TIERRA)).thenReturn(articulo(TIERRA, "Tierra", 5000));
 		when(ventaDao.update(any())).thenReturn(true);
 		when(ventaDao.anular(anyLong(), anyLong(), anyString())).thenReturn(true);
+		when(cobroDao.cobradoParaActualizar(anyLong())).thenReturn(BigDecimal.ZERO);
+		when(cobroService.plazoDias()).thenReturn(30);
 	}
 
 	private static Articulo articulo(long id, String nombre, long precio) {
@@ -227,5 +236,82 @@ class VentaServiceImplTest {
 	@Test
 	void cancelOfMissingSaleReturnsNull() {
 		assertNull(service.anular(404L, "No existe la venta"));
+	}
+
+	// --- Credit sales with payments ---------------------------------------------------------------
+
+	private static Cliente cliente(long id) {
+		Cliente c = new Cliente();
+		c.setId(id);
+		c.setNombres("Ana");
+		c.setApellidos("Pérez");
+		return c;
+	}
+
+	/** A credit sale of today for client 1, 2 macetas (Gs. 40.000), with Gs. 15.000 already paid. */
+	private Venta creditoConCobros() {
+		Venta v = venta(12L, LocalDate.now(), Venta.EMITIDA, linea(MACETA, 2, 20000L));
+		v.setCondicionVenta("CRE");
+		v.setCliente(cliente(1));
+		v.setTotalFactura(new BigDecimal("40000"));
+		existe(v);
+		when(cobroDao.cobradoParaActualizar(12L)).thenReturn(new BigDecimal("15000"));
+		return v;
+	}
+
+	private static Venta credito(long clienteId, DetalleVenta... lineas) {
+		Venta v = venta(null, null, null, lineas);
+		v.setCondicionVenta("CRE");
+		v.setCliente(cliente(clienteId));
+		return v;
+	}
+
+	@Test
+	void saleWithPaymentsCannotBeCancelled() {
+		creditoConCobros();
+		BusinessLogicException e = assertThrows(BusinessLogicException.class,
+				() -> service.anular(12L, "El cliente devolvió todo"));
+		assertTrue(e.getMessage().contains("tiene cobros por Gs. 15.000"), e.getMessage());
+		verify(ventaDao, never()).anular(anyLong(), anyLong(), anyString());
+	}
+
+	@Test
+	void saleWithPaymentsStaysOnCreditWithTheSameClient() {
+		creditoConCobros();
+		Venta contado = venta(null, null, null, linea(MACETA, 2, null));
+		contado.setCliente(cliente(1));
+		BusinessLogicException e1 = assertThrows(BusinessLogicException.class, () -> service.update(12L, contado));
+		assertTrue(e1.getMessage().contains("seguir siendo a crédito"), e1.getMessage());
+
+		BusinessLogicException e2 = assertThrows(BusinessLogicException.class,
+				() -> service.update(12L, credito(2, linea(MACETA, 2, null))));
+		assertTrue(e2.getMessage().contains("no se puede cambiar el cliente"), e2.getMessage());
+		verify(ventaDao, never()).update(any());
+	}
+
+	@Test
+	void saleWithPaymentsCannotGoBelowWhatWasPaid() {
+		creditoConCobros();
+		// One tierra: Gs. 5.000 < Gs. 15.000 already paid.
+		BusinessLogicException e = assertThrows(BusinessLogicException.class,
+				() -> service.update(12L, credito(1, linea(TIERRA, 1, null))));
+		assertTrue(e.getMessage().contains("no puede quedar por debajo"), e.getMessage());
+		verify(ventaDao, never()).update(any());
+	}
+
+	@Test
+	void saleWithPaymentsCanStillBeEditedAboveWhatWasPaid() {
+		creditoConCobros();
+		service.update(12L, credito(1, linea(MACETA, 1, null)));
+		verify(ventaDao).update(any());
+	}
+
+	@Test
+	void creditSaleGetsItsDueDateAndBalance() {
+		Venta v = creditoConCobros();
+		v.setCobrado(new BigDecimal("15000"));
+		Venta leida = service.getById(12L);
+		assertEquals(LocalDate.now().plusDays(30).toString(), leida.getVencimiento());
+		assertEquals(new BigDecimal("25000"), leida.getSaldo());
 	}
 }

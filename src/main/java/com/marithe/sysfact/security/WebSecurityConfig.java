@@ -119,6 +119,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, "/ventas/**").hasAnyAuthority("Cajero", "Administrador")
 				.antMatchers(HttpMethod.DELETE, "/ventas/**").hasAnyAuthority("Administrador")
 
+				// Accounts receivable. Payments themselves go under /ventas/{id}/cobros (rules above).
+				.antMatchers("/cobros", "/cobros/**").hasAnyAuthority("Cajero", "Administrador")
+
 				.antMatchers("/reportes/**").hasAnyAuthority("Administrador")
 
 				.antMatchers("/auditoria", "/auditoria/**").hasAnyAuthority("Administrador")

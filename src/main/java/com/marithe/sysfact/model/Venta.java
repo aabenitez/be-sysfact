@@ -20,6 +20,11 @@ public class Venta extends BaseEntity {
     private Date anulacionFecha;
     private Usuario anulacionUsuario;
     private String anulacionMotivo;
+    /** Sum of the valid payments (credit sales). */
+    private BigDecimal cobrado;
+    /** Credit sales: date it is due (its date plus the credit term). Null for cash sales. */
+    /** Due date of a credit sale as a calendar date (yyyy-MM-dd), so no time zone can shift it. */
+    private String vencimiento;
 
     public static final String EMITIDA = "EMITIDA";
     public static final String ANULADA = "ANULADA";
@@ -83,4 +88,15 @@ public class Venta extends BaseEntity {
 
     public String getAnulacionMotivo() { return anulacionMotivo; }
     public void setAnulacionMotivo(String anulacionMotivo) { this.anulacionMotivo = anulacionMotivo; }
+    public BigDecimal getCobrado() { return cobrado == null ? BigDecimal.ZERO : cobrado; }
+    public void setCobrado(BigDecimal cobrado) { this.cobrado = cobrado; }
+    public String getVencimiento() { return vencimiento; }
+    public void setVencimiento(String vencimiento) { this.vencimiento = vencimiento; }
+    /** What is still owed: only a valid credit sale owes anything (cash sales are paid when issued). */
+    public BigDecimal getSaldo() {
+        if (!"CRE".equals(condicionVenta) || ANULADA.equals(estado) || totalFactura == null) {
+            return BigDecimal.ZERO;
+        }
+        return totalFactura.subtract(getCobrado()).max(BigDecimal.ZERO);
+    }
 }

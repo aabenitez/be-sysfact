@@ -23,6 +23,10 @@ GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO "$DB_USER";
 REVOKE UPDATE, DELETE, TRUNCATE ON public.auditoria FROM "$DB_USER";
 -- Stock movements too: the history of every stock number cannot be rewritten.
 REVOKE UPDATE, DELETE, TRUNCATE ON public.movimiento_stock FROM "$DB_USER";
+-- Payments are never deleted or rewritten: the application may only cancel them.
+REVOKE UPDATE, DELETE, TRUNCATE ON public.cobro FROM "$DB_USER";
+GRANT UPDATE (estado, anulacion_fecha, anulacion_usuario_id, anulacion_usuario_nombre, anulacion_motivo)
+    ON public.cobro TO "$DB_USER";
 EOF
 ok "Permisos otorgados"
 

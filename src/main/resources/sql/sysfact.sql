@@ -192,6 +192,32 @@ CREATE TABLE public.movimiento_stock
 
 CREATE INDEX ix_movimiento_stock_articulo ON public.movimiento_stock (articulo_id, id DESC);
 
+-- Payments received for credit sales (see migracion_cobros.sql). They are cancelled, never deleted.
+CREATE TABLE public.cobro
+(
+    id BIGSERIAL,
+    fecha timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    venta_id BIGINT NOT NULL,
+    monto DECIMAL(19,2) NOT NULL,
+    forma_pago VARCHAR(15) NOT NULL,
+    referencia VARCHAR(100) NULL,
+    usuario_id BIGINT NULL,
+    usuario_nombre VARCHAR(201) NOT NULL,
+    estado VARCHAR(10) NOT NULL DEFAULT 'VIGENTE',
+    anulacion_fecha timestamp without time zone NULL,
+    anulacion_usuario_id BIGINT NULL,
+    anulacion_usuario_nombre VARCHAR(201) NULL,
+    anulacion_motivo VARCHAR(250) NULL,
+    CONSTRAINT pk_cobro PRIMARY KEY (id),
+    CONSTRAINT ck_cobro_monto CHECK (monto > 0),
+    CONSTRAINT ck_cobro_forma_pago
+        CHECK (forma_pago IN ('EFECTIVO', 'TRANSFERENCIA', 'TARJETA', 'CHEQUE', 'OTRO')),
+    CONSTRAINT ck_cobro_estado CHECK (estado IN ('VIGENTE', 'ANULADO')),
+    CONSTRAINT fk_cobro_venta_id FOREIGN KEY (venta_id) REFERENCES public.venta (id)
+);
+
+CREATE INDEX ix_cobro_venta ON public.cobro (venta_id);
+
 ---------------------
 -- Datos de Prueba --
 ---------------------
@@ -267,6 +293,7 @@ INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(4,
 INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(5, 'Servidor stmp', 'smtp.host', true, 'mail.maritheplantasyceramicas.com');
 INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(6, 'Directorio de reportes', 'reports.path', true, '\home\marithe\sysfact\src\main\resources\reportes');
 INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(7, 'Directorio de subida de archivos', 'uploads.path', true, '\home\marithe\sysfact\uploads');
-SELECT setval('parametros_id_seq', 7);
+INSERT INTO public.parametros (id, descripcion, codigo, activo, valor) VALUES(8, 'Plazo de las ventas a crédito (días)', 'credito.plazo.dias', true, '30');
+SELECT setval('parametros_id_seq', 8);
 
 -----
