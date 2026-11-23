@@ -27,6 +27,10 @@ REVOKE UPDATE, DELETE, TRUNCATE ON public.movimiento_stock FROM "$DB_USER";
 REVOKE UPDATE, DELETE, TRUNCATE ON public.cobro FROM "$DB_USER";
 GRANT UPDATE (estado, anulacion_fecha, anulacion_usuario_id, anulacion_usuario_nombre, anulacion_motivo)
     ON public.cobro TO "$DB_USER";
+-- Cash closings likewise: only cancelled, never rewritten.
+REVOKE UPDATE, DELETE, TRUNCATE ON public.caja_cierre FROM "$DB_USER";
+GRANT UPDATE (estado, anulacion_fecha, anulacion_usuario_id, anulacion_usuario_nombre, anulacion_motivo)
+    ON public.caja_cierre TO "$DB_USER";
 EOF
 ok "Permisos otorgados"
 

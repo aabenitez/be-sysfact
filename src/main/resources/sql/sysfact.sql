@@ -109,10 +109,16 @@ CREATE TABLE public.venta
     cliente_id BIGINT null,
     usuario_id BIGINT NOT NULL,
     estado VARCHAR(10) NOT NULL DEFAULT 'EMITIDA',
+    -- How a cash sale was paid (see migracion_caja.sql); empty for credit sales.
+    forma_pago VARCHAR(15) NULL,
     anulacion_fecha timestamp without time zone NULL,
     anulacion_usuario_id BIGINT NULL,
     anulacion_motivo VARCHAR(250) NULL,
     CONSTRAINT pk_venta PRIMARY KEY (id),
+    CONSTRAINT ck_venta_forma_pago CHECK (
+        (condicion_venta = 'CRE' AND forma_pago IS NULL)
+        OR (condicion_venta = 'CON'
+            AND forma_pago IN ('EFECTIVO', 'TRANSFERENCIA', 'TARJETA', 'CHEQUE', 'OTRO'))),
     CONSTRAINT fk_venta_anulacion_usuario_id FOREIGN KEY (anulacion_usuario_id)
         REFERENCES public.usuario (id),
     CONSTRAINT venta_estado_check CHECK (estado IN ('EMITIDA', 'ANULADA')),
@@ -217,6 +223,35 @@ CREATE TABLE public.cobro
 );
 
 CREATE INDEX ix_cobro_venta ON public.cobro (venta_id);
+CREATE INDEX ix_cobro_fecha ON public.cobro (fecha);
+CREATE INDEX ix_venta_fecha ON public.venta (fecha);
+
+-- Daily cash closings (see migracion_caja.sql). Cancelled, never deleted; one valid per day.
+CREATE TABLE public.caja_cierre
+(
+    id BIGSERIAL,
+    fecha DATE NOT NULL,
+    fondo_inicial DECIMAL(19,2) NOT NULL DEFAULT 0,
+    total_ventas DECIMAL(19,2) NOT NULL,
+    total_cobros DECIMAL(19,2) NOT NULL,
+    efectivo_esperado DECIMAL(19,2) NOT NULL,
+    efectivo_contado DECIMAL(19,2) NOT NULL,
+    diferencia DECIMAL(19,2) NOT NULL,
+    observacion VARCHAR(250) NULL,
+    creado timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usuario_id BIGINT NULL,
+    usuario_nombre VARCHAR(201) NOT NULL,
+    estado VARCHAR(10) NOT NULL DEFAULT 'VIGENTE',
+    anulacion_fecha timestamp without time zone NULL,
+    anulacion_usuario_id BIGINT NULL,
+    anulacion_usuario_nombre VARCHAR(201) NULL,
+    anulacion_motivo VARCHAR(250) NULL,
+    CONSTRAINT pk_caja_cierre PRIMARY KEY (id),
+    CONSTRAINT ck_caja_cierre_montos CHECK (fondo_inicial >= 0 AND efectivo_contado >= 0),
+    CONSTRAINT ck_caja_cierre_estado CHECK (estado IN ('VIGENTE', 'ANULADO'))
+);
+
+CREATE UNIQUE INDEX ux_caja_cierre_fecha_vigente ON public.caja_cierre (fecha) WHERE estado = 'VIGENTE';
 
 ---------------------
 -- Datos de Prueba --

@@ -10,6 +10,7 @@ import com.marithe.sysfact.exception.BusinessLogicException;
 import com.marithe.sysfact.model.Articulo;
 import com.marithe.sysfact.model.Auditoria;
 import com.marithe.sysfact.model.Cliente;
+import com.marithe.sysfact.model.Cobro;
 import com.marithe.sysfact.model.Venta;
 import com.marithe.sysfact.model.DetalleVenta;
 import com.marithe.sysfact.dao.ArticuloDao;
@@ -230,6 +231,7 @@ public class VentaServiceImpl implements VentaService {
         if ("CRE".equals(venta.getCondicionVenta()) && venta.getCliente() == null) {
             throw new BusinessLogicException("Para vender a crédito hay que elegir un cliente.");
         }
+        prepararFormaPago(venta);
         Map<Long, Articulo> articulos = new HashMap<>();
         if (venta.getDetallesVenta() != null) {
             for (DetalleVenta d : venta.getDetallesVenta()) {
@@ -243,6 +245,24 @@ public class VentaServiceImpl implements VentaService {
         // El IVA y los totales se calculan aquí con la tasa de cada artículo;
         // no se confía en los montos que envía el cliente.
         CalculadoraIva.calcular(venta, d -> articulos.get(d.getArticulo().getId()).getTasaIva());
+    }
+
+    /**
+     * A cash sale says how it was paid (cash by default, for clients that do not send it yet); a
+     * credit sale is paid later through its payments, so it has none.
+     */
+    private static void prepararFormaPago(Venta venta) {
+        if ("CRE".equals(venta.getCondicionVenta())) {
+            venta.setFormaPago(null);
+            return;
+        }
+        if (venta.getFormaPago() == null || venta.getFormaPago().trim().isEmpty()) {
+            venta.setFormaPago("EFECTIVO");
+        }
+        venta.setFormaPago(venta.getFormaPago().trim().toUpperCase());
+        if (!Cobro.FORMAS_PAGO.contains(venta.getFormaPago())) {
+            throw new BusinessLogicException("La forma de pago tiene que ser efectivo, transferencia, tarjeta, cheque u otra.");
+        }
     }
 
     /**
@@ -314,7 +334,11 @@ public class VentaServiceImpl implements VentaService {
         for (DetalleVenta d : v.getDetallesVenta()) {
             unidades += d.getCantidad();
         }
-        return "Factura N.º " + numero(v.getId()) + " · " + condicion(v.getCondicionVenta()) + " · "
+        String cond = condicion(v.getCondicionVenta());
+        if (v.getFormaPago() != null) {
+            cond += " (" + formaPago(v.getFormaPago()) + ")";
+        }
+        return "Factura N.º " + numero(v.getId()) + " · " + cond + " · "
                 + gs(v.getTotalFactura()) + " · " + unidades + (unidades == 1 ? " unidad" : " unidades")
                 + " · " + cliente(v.getCliente());
     }
@@ -324,6 +348,10 @@ public class VentaServiceImpl implements VentaService {
         List<String> cambios = new ArrayList<>();
         if (!Objects.equals(antes.getCondicionVenta(), despues.getCondicionVenta())) {
             cambios.add("condición " + condicion(antes.getCondicionVenta()) + " → " + condicion(despues.getCondicionVenta()));
+        }
+        if (!Objects.equals(antes.getFormaPago(), despues.getFormaPago()) && antes.getFormaPago() != null
+                && despues.getFormaPago() != null) {
+            cambios.add("forma de pago " + formaPago(antes.getFormaPago()) + " → " + formaPago(despues.getFormaPago()));
         }
         Long clienteAntes = antes.getCliente() == null ? null : antes.getCliente().getId();
         Long clienteDespues = despues.getCliente() == null ? null : despues.getCliente().getId();
@@ -386,6 +414,18 @@ public class VentaServiceImpl implements VentaService {
 
     private static String condicion(String c) {
         return "CON".equals(c) ? "Contado" : "CRE".equals(c) ? "Crédito" : String.valueOf(c);
+    }
+
+    /** "efectivo", "transferencia"…, for texts. */
+    static String formaPago(String f) {
+        switch (f == null ? "" : f) {
+        case "EFECTIVO": return "efectivo";
+        case "TRANSFERENCIA": return "transferencia";
+        case "TARJETA": return "tarjeta";
+        case "CHEQUE": return "cheque";
+        case "OTRO": return "otra forma de pago";
+        default: return String.valueOf(f);
+        }
     }
 
     private static String cliente(Cliente c) {

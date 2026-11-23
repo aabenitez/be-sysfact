@@ -146,6 +146,63 @@ class VentaServiceImplTest {
 	}
 
 	@Test
+	void cashSaleWithoutPaymentMethodIsTakenAsCash() {
+		Venta nueva = venta(null, null, null, linea(MACETA, 1, null));
+		when(ventaDao.insert(any())).thenAnswer(i -> {
+			Venta v = i.getArgument(0);
+			v.setId(51L);
+			existe(v);
+			return v;
+		});
+
+		assertEquals("EFECTIVO", service.insert(nueva).getFormaPago());
+	}
+
+	@Test
+	void cashSaleKeepsAValidPaymentMethodAndRejectsOthers() {
+		Venta nueva = venta(null, null, null, linea(MACETA, 1, null));
+		nueva.setFormaPago("transferencia");
+		when(ventaDao.insert(any())).thenAnswer(i -> {
+			Venta v = i.getArgument(0);
+			v.setId(52L);
+			existe(v);
+			return v;
+		});
+		assertEquals("TRANSFERENCIA", service.insert(nueva).getFormaPago());
+
+		Venta mala = venta(null, null, null, linea(MACETA, 1, null));
+		mala.setFormaPago("BITCOIN");
+		assertThrows(BusinessLogicException.class, () -> service.insert(mala));
+	}
+
+	@Test
+	void creditSaleHasNoPaymentMethod() {
+		Venta nueva = credito(4L, linea(MACETA, 1, null));
+		nueva.setFormaPago("TARJETA");
+		when(ventaDao.insert(any())).thenAnswer(i -> {
+			Venta v = i.getArgument(0);
+			v.setId(53L);
+			existe(v);
+			return v;
+		});
+
+		assertNull(service.insert(nueva).getFormaPago());
+	}
+
+	@Test
+	void auditTextsShowThePaymentMethod() {
+		Venta antes = venta(1L, LocalDate.now(), Venta.EMITIDA, linea(MACETA, 1, 20000L));
+		antes.setFormaPago("EFECTIVO");
+		antes.setTotalFactura(new BigDecimal("20000"));
+		Venta despues = venta(1L, LocalDate.now(), Venta.EMITIDA, linea(MACETA, 1, 20000L));
+		despues.setFormaPago("TARJETA");
+		despues.setTotalFactura(new BigDecimal("20000"));
+
+		assertEquals("forma de pago efectivo → tarjeta", VentaServiceImpl.cambios(antes, despues));
+		assertTrue(VentaServiceImpl.resumen(despues).contains("Contado (tarjeta)"));
+	}
+
+	@Test
 	void cashierCannotChangeTheListPrice() {
 		Venta nueva = venta(null, null, null, linea(MACETA, 1, 15000L));
 		BusinessLogicException e = assertThrows(BusinessLogicException.class, () -> service.insert(nueva));

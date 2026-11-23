@@ -197,6 +197,14 @@ Lo mismo con `migracion_stock_movimientos.sql` (historial de stock y stock míni
 sudo -u postgres psql -d sysfact -v app_user=sysfact -f migracion_stock_movimientos.sql
 ```
 
+Y con las que vinieron después, en este orden: `migracion_cobros.sql` (cuentas por cobrar) y
+`migracion_caja.sql` (forma de pago de las ventas al contado y cierres de caja):
+
+```bash
+sudo -u postgres psql -d sysfact -v app_user=sysfact -f migracion_cobros.sql
+sudo -u postgres psql -d sysfact -v app_user=sysfact -f migracion_caja.sql
+```
+
 **Volver atrás el frontend:** la versión anterior queda en `/var/www/sysfact.anterior`.
 
 ```bash

@@ -83,6 +83,7 @@ public class VentaDaoImpl implements VentaDao {
             }
 
             ps.setLong(8, venta.getUsuario().getId());
+            ps.setString(9, venta.getFormaPago());
             return ps;
         }, keyHolder);
 
@@ -162,7 +163,7 @@ public class VentaDaoImpl implements VentaDao {
         Long clienteId = venta.getCliente() != null ? venta.getCliente().getId() : null;
         return jdbcTemplate.update(ventaSql.getUpdate(), venta.getCondicionVenta(), venta.getTotalIva5(),
                 venta.getTotalIva10(), venta.getTotalExenta(), venta.getTotalDescuento(), venta.getTotalFactura(),
-                clienteId, venta.getId()) == 1;
+                clienteId, venta.getFormaPago(), venta.getId()) == 1;
     }
 
     @Override

@@ -121,6 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 				// Accounts receivable. Payments themselves go under /ventas/{id}/cobros (rules above).
 				.antMatchers("/cobros", "/cobros/**").hasAnyAuthority("Cajero", "Administrador")
+				.antMatchers("/caja", "/caja/**").hasAnyAuthority("Cajero", "Administrador")
 
 				.antMatchers("/reportes/**").hasAnyAuthority("Administrador")
 

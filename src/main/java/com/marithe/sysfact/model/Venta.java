@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Venta extends BaseEntity {
     private String condicionVenta; // "CON" o "CRE"
+    /** Cash sales: EFECTIVO, TRANSFERENCIA, TARJETA, CHEQUE or OTRO. Null for credit sales. */
+    private String formaPago;
     private Date fecha;
     private BigDecimal totalIva5;
     private BigDecimal totalIva10;
@@ -22,8 +24,10 @@ public class Venta extends BaseEntity {
     private String anulacionMotivo;
     /** Sum of the valid payments (credit sales). */
     private BigDecimal cobrado;
-    /** Credit sales: date it is due (its date plus the credit term). Null for cash sales. */
-    /** Due date of a credit sale as a calendar date (yyyy-MM-dd), so no time zone can shift it. */
+    /**
+     * Credit sales: date it is due (its date plus the credit term), as a calendar date (yyyy-MM-dd)
+     * so no time zone can shift it. Null for cash sales.
+     */
     private String vencimiento;
 
     public static final String EMITIDA = "EMITIDA";
@@ -90,6 +94,8 @@ public class Venta extends BaseEntity {
     public void setAnulacionMotivo(String anulacionMotivo) { this.anulacionMotivo = anulacionMotivo; }
     public BigDecimal getCobrado() { return cobrado == null ? BigDecimal.ZERO : cobrado; }
     public void setCobrado(BigDecimal cobrado) { this.cobrado = cobrado; }
+    public String getFormaPago() { return formaPago; }
+    public void setFormaPago(String formaPago) { this.formaPago = formaPago; }
     public String getVencimiento() { return vencimiento; }
     public void setVencimiento(String vencimiento) { this.vencimiento = vencimiento; }
     /** What is still owed: only a valid credit sale owes anything (cash sales are paid when issued). */

@@ -15,6 +15,7 @@ public class VentaMapper implements RowMapper<Venta> {
         Venta venta = new Venta();
         venta.setId(rs.getLong("id"));
         venta.setCondicionVenta(rs.getString("condicion_venta"));
+        venta.setFormaPago(rs.getString("forma_pago"));
         venta.setFecha(rs.getTimestamp("fecha"));
         venta.setTotalIva5(rs.getBigDecimal("total_iva5"));
         venta.setTotalIva10(rs.getBigDecimal("total_iva10"));
